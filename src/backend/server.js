@@ -70,25 +70,29 @@ app.post('/login', (req, res) => {
             return;
         }
 
-        // Verificar o setor do usuário
-        if (user.idSetor === 7) { // Se o setor for administrador
-            res.status(200).send({ redirectTo: '/admin-dashboard' }); // Redirecionar para o painel de administração
-        } else if (user.idSetor === 1) { // Se o setor for salão
-            res.status(200).send({ redirectTo: '/salao-dashboard' }); // Redirecionar para o painel do salão
-        } else if (user.idSetor === 2) { // Se o setor for bar
-            res.status(200).send({ redirectTo: '/bar-dashboard' }); // Redirecionar para o painel do bar
-        } else if (user.idSetor === 3) { // Se o setor for caixa
-            res.status(200).send({ redirectTo: '/caixa-dashboard' }); // Redirecionar para o painel do caixa
-        }else if (user.idSetor === 4) { // Se o setor for asg
-            res.status(200).send({ redirectTo: '/asg-dashboard' }); // Redirecionar para o painel do asg
-        }else if (user.idSetor === 5) { // Se o setor for cozinha
-            res.status(200).send({ redirectTo: '/coz-dashboard' }); // Redirecionar para o painel do cozinha
-        }else if (user.idSetor === 6) { // Se o setor for produção
-            res.status(200).send({ redirectTo: '/produ-dashboard' }); // Redirecionar para o painel do produção
-        };
-
         // Gerar token JWT
         const token = jwt.sign({ id: user.idUsuario, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+        // Verificar o setor do usuário
+        if (user.idSetor === 7) {
+            res.status(200).send({ redirectTo: '/admin-dashboard', token });
+        } else if (user.idSetor === 1) {
+            res.status(200).send({ redirectTo: '/salao-dashboard', token });
+        } else if (user.idSetor === 2) {
+            res.status(200).send({ redirectTo: '/bar-dashboard', token });
+        } else if (user.idSetor === 3) {
+            res.status(200).send({ redirectTo: '/caixa-dashboard', token });
+        } else if (user.idSetor === 4) {
+            res.status(200).send({ redirectTo: '/asg-dashboard', token });
+        } else if (user.idSetor === 5) {
+            res.status(200).send({ redirectTo: '/coz-dashboard', token });
+        } else if (user.idSetor === 6) {
+            res.status(200).send({ redirectTo: '/prod-dashboard', token });
+        } else {
+            console.error('Setor de usuário desconhecido:', user.idSetor);
+            res.status(500).send('Erro interno do servidor');
+        }
+
 
         res.status(200).json({ token });
     });
@@ -158,7 +162,6 @@ app.get('/admin-dashboard', (req, res) => {
 
 // Endpoint para visualizar todos os usuários
 app.get('/users', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/cadastroUsuario/index.html'))
     app.use('/frontend', express.static(path.join(__dirname, '../frontend/')));
 });
 
@@ -167,7 +170,10 @@ app.get('/lojas', (req, res) => {
     res.sendFile((path.join(__dirname, '../frontend/cadastroLoja/index.html')))
 });
 
-
+// Endpoint para visualizar todos os setores
+app.get('/setores', (req, res) => {
+    res.sendFile((path.join(__dirname, '../frontend/cadastroSetor/index.html')))
+});
 
 
 
