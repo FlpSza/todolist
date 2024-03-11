@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -24,31 +25,47 @@ export default function ViewUser() {
         fetchUsers();
     }, []);
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleUserPress(item)}>
-            <Text style={styles.item}>{item.nome}</Text>
-        </TouchableOpacity>
-    );
-
-    const handleUserPress = (user) => {
-        console.log('Usuário selecionado:', user);
-        // Aqui você pode navegar para a tela de detalhes do usuário
+    const handleDeleteUser = async (userId) => {
+        try {
+            // Endpoint para excluir o usuário
+            await axios.delete(`http://localhost:3000/user/${userId}`);
+            // Atualiza a lista de usuários após a exclusão
+            setUsers(users.filter(user => user.id !== userId));
+        } catch (error) {
+            console.error('Erro ao excluir usuário:', error);
+        }
     };
+
+    const renderItem = ({ item }) => (
+        <View style={styles.itemContainer}>
+            <View style={styles.userInfo}>
+                <Text>ID: {item.idUsuario}                         | Nome: {item.nome}                         | Email: {item.email}                         </Text>
+                {/* <Text>Nome: {item.nome}</Text>
+                <Text>Email: {item.email}</Text> */}
+            </View>
+            <TouchableOpacity onPress={() => handleDeleteUser(item.id)}>
+                <Ionicons name="trash-bin" size={24} color="red" />
+            </TouchableOpacity>
+        </View>
+    );
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={24} color="blue" />
+                </TouchableOpacity>
+                <Text style={styles.headerText}>LISTA DE USUÁRIOS</Text>
+            </View>
             <FlatList
                 data={users}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idUsuario.toString()}
             />
             <StatusBar style="auto" />
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.header}>
-                <Text style={styles.backButton}>Voltar</Text>
-            </TouchableOpacity>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -60,17 +77,29 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         paddingHorizontal: 10,
         paddingTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '100%', // Defina a largura total do cabeçalho
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     backButton: {
-        fontSize: 18,
-        color: 'blue',
+        padding: 5,
     },
-    item: {
+    itemContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 10,
-        fontSize: 18,
-        height: 44,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    userInfo: {
+        flex: 1,
     },
 });
