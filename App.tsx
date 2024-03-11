@@ -1,10 +1,6 @@
 import React from 'react';
-import Login from './src/screens/login/Login'
-import 'react-native-gesture-handler';
-
+import AppNavigator from './src/components/AppNavigator';
 
 export default function App() {
-  return (
-    <Login/>
-  );
+  return <AppNavigator />;
 }

@@ -51,50 +51,49 @@ app.post('/login', (req, res) => {
     const { email, senha } = req.body;
     const sql = 'SELECT * FROM Usuarios WHERE email = ?';
 
-    pool.query(sql, [email], async (err, results) => {
+    pool.query(sql, [email], (err, results) => {
         if (err) {
             console.error('Erro ao buscar usuário:', err);
-            res.status(500).send('Erro ao buscar usuário');
-            return;
+            return res.status(500).send('Erro ao buscar usuário');
         }
         if (results.length === 0) {
-            res.status(404).send('Usuário não encontrado');
-            return;
+            return res.status(404).send('Usuário não encontrado');
         }
 
         const user = results[0];
-        const passwordMatch = await bcrypt.compare(senha, user.senha);
-
-        if (!passwordMatch) {
-            res.status(401).send('Credenciais inválidas');
-            return;
+        
+        // Lógica de autenticação com senha em texto simples
+        if (user.senha !== senha) {
+            return res.status(401).send('Credenciais inválidas');
         }
 
-        // Gerar token JWT
-        const token = jwt.sign({ id: user.idUsuario, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+        // Gerar token JWT incluindo o idSetor no payload
+        const tokenPayload = { 
+            id: user.idUsuario, 
+            email: user.email, 
+            idSetor: user.idSetor // Incluindo o idSetor no payload
+        };
+        const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
 
-        // Verificar o setor do usuário
+        // Verificar o setor do usuário e enviar o redirecionamento
         if (user.idSetor === 7) {
-            res.status(200).send({ redirectTo: '/admin-dashboard', token });
+            return res.status(200).send({ redirectTo: '/admin-dashboard', token });
         } else if (user.idSetor === 1) {
-            res.status(200).send({ redirectTo: '/salao-dashboard', token });
+            return res.status(200).send({ redirectTo: '/salao-dashboard', token });
         } else if (user.idSetor === 2) {
-            res.status(200).send({ redirectTo: '/bar-dashboard', token });
+            return res.status(200).send({ redirectTo: '/bar-dashboard', token });
         } else if (user.idSetor === 3) {
-            res.status(200).send({ redirectTo: '/caixa-dashboard', token });
+            return res.status(200).send({ redirectTo: '/caixa-dashboard', token });
         } else if (user.idSetor === 4) {
-            res.status(200).send({ redirectTo: '/asg-dashboard', token });
+            return res.status(200).send({ redirectTo: '/asg-dashboard', token });
         } else if (user.idSetor === 5) {
-            res.status(200).send({ redirectTo: '/coz-dashboard', token });
+            return res.status(200).send({ redirectTo: '/coz-dashboard', token });
         } else if (user.idSetor === 6) {
-            res.status(200).send({ redirectTo: '/prod-dashboard', token });
+            return res.status(200).send({ redirectTo: '/prod-dashboard', token });
         } else {
             console.error('Setor de usuário desconhecido:', user.idSetor);
-            res.status(500).send('Erro interno do servidor');
+            return res.status(500).send('Erro interno do servidor');
         }
-
-
-        res.status(200).json({ token });
     });
 });
 
@@ -119,7 +118,7 @@ app.post('/users', async (req, res) => {
         }
 
         // Gerar hash da senha usando o bcrypt
-        const hashedSenha = await bcrypt.hash(senha, 10);
+        // const hashedSenha = await bcrypt.hash(senha, 10);
 
         // SQL para inserir o novo usuário no banco de dados
         const sql = 'INSERT INTO Usuarios (nome, email, senha, idSetor, idLoja) VALUES (?, ?, ?, ?, ?)';
@@ -131,7 +130,7 @@ app.post('/users', async (req, res) => {
         const idSetor = setoresNumeros[nomeSetor];
 
         // Executar a consulta SQL para inserir o usuário
-        pool.query(sql, [nome, email, hashedSenha, idSetor, idLoja], (err, results) => {
+        pool.query(sql, [nome, email, senha, idSetor, idLoja], (err, results) => {
             if (err) {
                 console.error('Erro ao inserir o usuário no banco de dados:', err);
                 res.status(500).send('Erro ao cadastrar o usuário');
@@ -152,6 +151,18 @@ app.post('/users', async (req, res) => {
         res.status(500).send('Erro ao processar a senha');
     }
 });
+
+// Rota para obter informações do usuário
+app.get('/user-info', authenticateToken, (req, res) => {
+    // As informações do usuário, incluindo o idSetor, estão disponíveis no objeto req.user
+    const { idSetor } = req.user;
+    
+    // Aqui você pode buscar outras informações do usuário no banco de dados, se necessário
+
+    // Por fim, você pode enviar as informações do usuário de volta como resposta
+    res.status(200).json({ idSetor });
+});
+
 
 // ADMINISTRADOR
 
