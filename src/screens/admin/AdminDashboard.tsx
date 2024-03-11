@@ -3,7 +3,10 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, Text, Button, IconButton } from 'react-native-paper';
 import { View, ImageBackground, StyleSheet } from 'react-native';
-import CadUser from './CadUser';
+import ViewUser from './ViewUser';
+import ViewStore from './ViewStore';
+import ViewSector from './ViewSector';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
@@ -21,15 +24,15 @@ const Cadastro = () => {
   const navigation = useNavigation<any>();
 
   const handleButton1Press = () => {
-    navigation.navigate('CadUser');
+    navigation.navigate('ViewUser');
   };
 
   const handleButton2Press = () => {
-    navigation.navigate('CadStore');
+    navigation.navigate('ViewStore');
   };
 
   const handleButton3Press = () => {
-    navigation.navigate('CadSector');
+    navigation.navigate('ViewSector');
   };
 
   return (

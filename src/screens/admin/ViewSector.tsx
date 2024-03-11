@@ -1,23 +1,38 @@
 import React from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
 
+export default function ViewSector() {
+    const navigation = useNavigation();
 
-
-export default function ViewSector () {
-    return(
-        <View style = {styles.container}>
-        <Text>Essa vai ser a tela de setores da minha aplicação. vai ter a tela com os setores e o botao de cadastro</Text>
-        <StatusBar style="auto" />
+    return (
+        <View style={styles.container}>
+            <Text>Essa vai ser a tela de Setores da minha aplicação.</Text>
+            <StatusBar style="auto" />
+            <TouchableOpacity onPress={() => navigation.goBack()} style={ styles.header }>
+                <Text style={styles.backButton}>Voltar</Text>
+            </TouchableOpacity>
         </View>
-    )
+    );
 };
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-  });
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingHorizontal: 10,
+        paddingTop: 10,
+    },
+    backButton: {
+        fontSize: 18,
+        color: 'blue',
+    },
+});

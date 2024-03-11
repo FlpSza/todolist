@@ -173,7 +173,7 @@ app.get('/admin-dashboard', (req, res) => {
 
 // Endpoint para visualizar todos os usuários
 app.get('/users', (req, res) => {
-    app.use('/frontend', express.static(path.join(__dirname, '../frontend/')));
+    
 });
 
 // Endpoint para visualizar todas as lojas
