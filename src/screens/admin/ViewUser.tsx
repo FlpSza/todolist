@@ -25,25 +25,30 @@ export default function ViewUser() {
         fetchUsers();
     }, []);
 
-    const handleDeleteUser = async (userId) => {
+    const handleDeleteUser = async (userName) => {
         try {
             // Endpoint para excluir o usuário
-            await axios.delete(`http://localhost:3000/user/${userId}`);
+            await axios.delete(`http://localhost:3000/users/${userName}`);
             // Atualiza a lista de usuários após a exclusão
-            setUsers(users.filter(user => user.id !== userId));
+            setUsers(prevUsers => prevUsers.filter(user => user.nome !== userName));
         } catch (error) {
             console.error('Erro ao excluir usuário:', error);
         }
     };
+    
+    const handleAddUser = () => {
+        // Navegar para a tela de cadastro de usuário
+        navigation.navigate('CadUser' as never); // Especificando 'CadUser' como never
+    };    
 
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
             <View style={styles.userInfo}>
-                <Text>ID: {item.idUsuario}                         | Nome: {item.nome}                         | Email: {item.email}                         </Text>
-                {/* <Text>Nome: {item.nome}</Text>
-                <Text>Email: {item.email}</Text> */}
+                <Text>ID: {item.idUsuario}</Text>
+                <Text style={styles.userInfoText}>| Nome: {item.nome}</Text>
+                <Text style={styles.userInfoText}>| Email: {item.email}</Text>
             </View>
-            <TouchableOpacity onPress={() => handleDeleteUser(item.id)}>
+            <TouchableOpacity onPress={() => handleDeleteUser(item.nome)}>
                 <Ionicons name="trash-bin" size={24} color="red" />
             </TouchableOpacity>
         </View>
@@ -58,10 +63,14 @@ export default function ViewUser() {
                 <Text style={styles.headerText}>LISTA DE USUÁRIOS</Text>
             </View>
             <FlatList
+                style = {styles.flatlist}
                 data={users}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idUsuario.toString()}
             />
+            <TouchableOpacity onPress={handleAddUser} style={styles.addButton}>
+                <Ionicons name="add" size={24} color="white" />
+            </TouchableOpacity>
             <StatusBar style="auto" />
         </View>
     );
@@ -101,5 +110,27 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         flex: 1,
+        flexDirection: 'row', // Alinha os textos horizontalmente
+        alignItems: 'center', // Alinha os textos verticalmente
+        width: '100%', // Ocupa 100% da largura horizontalmente
+        justifyContent: 'space-between',
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: 'blue',
+        borderRadius: 30,
+        width: 60,
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    userInfoText: {
+        paddingRight: 20, // Distância fixa à direita de cada texto
+        width: '33.33%',
+    },
+    flatlist: {
+        width: '100%',
     },
 });

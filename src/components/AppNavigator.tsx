@@ -5,7 +5,7 @@ import Login from '../screens/login/Login';
 import ViewUser from '../screens/admin/ViewUser';
 import ViewStore from '../screens/admin/ViewStore';
 import ViewSector from '../screens/admin/ViewSector';
-
+import CadUser from '../screens/admin/CadUser'
 // Crie o navegador raiz
 const Stack = createStackNavigator();
 
@@ -20,6 +20,7 @@ function AppNavigator() {
         <Stack.Screen name="ViewUser" component={ViewUser} />
         <Stack.Screen name="ViewStore" component={ViewStore} />
         <Stack.Screen name="ViewSector" component={ViewSector} />
+        <Stack.Screen name="CadUser" component={CadUser}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

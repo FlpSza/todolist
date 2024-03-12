@@ -101,34 +101,16 @@ app.post('/login', (req, res) => {
 app.post('/users', async (req, res) => {
     // Extrair informações do usuário do corpo da solicitação
     const { nome, email, senha, idSetor, idLoja } = req.body;
-    const setoresNumeros = {
-        salao: 1,
-        bar: 2,
-        caixa: 3,
-        ASG: 4,
-        cozinha: 5,
-        producao: 6,
-        administrador: 7
-    };
 
     try {
         // Verificar se a senha está vazia
         if (!senha) {
             return res.status(400).send('Senha não fornecida');
         }
-
-        // Gerar hash da senha usando o bcrypt
-        // const hashedSenha = await bcrypt.hash(senha, 10);
-
+    
         // SQL para inserir o novo usuário no banco de dados
         const sql = 'INSERT INTO Usuarios (nome, email, senha, idSetor, idLoja) VALUES (?, ?, ?, ?, ?)';
-
-        // Obtendo o nome do setor da requisição
-        const nomeSetor = req.body.idSetor;
-
-        // Convertendo o nome do setor em seu número correspondente
-        const idSetor = setoresNumeros[nomeSetor];
-
+    
         // Executar a consulta SQL para inserir o usuário
         pool.query(sql, [nome, email, senha, idSetor, idLoja], (err, results) => {
             if (err) {
@@ -136,9 +118,9 @@ app.post('/users', async (req, res) => {
                 res.status(500).send('Erro ao cadastrar o usuário');
                 return;
             }
-
+    
             // Verificar o setor do usuário e redirecionar com base nisso
-            if (nomeSetor === 'administrador') {
+            if (idSetor === 7) { // assumindo que 7 é o ID do setor 'administrador'
                 // Redirecionar para uma rota específica para administradores
                 res.status(201).json({ mensagem: 'Cadastro realizado com sucesso - Administrador', redirect: '/admin-home' });
             } else {
@@ -147,8 +129,8 @@ app.post('/users', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Erro ao gerar hash da senha:', error);
-        res.status(500).send('Erro ao processar a senha');
+        console.error('Erro ao processar a solicitação:', error);
+        res.status(500).send('Erro ao processar a solicitação');
     }
 });
 
@@ -171,40 +153,60 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../screens/admin/AdminDashboard.tsx'));
 });
 
-// Endpoint para visualizar todos os usuários
-app.get('/users', (req, res) => {
-    
-});
-
 // Endpoint para visualizar todas as lojas
 app.get('/lojas', (req, res) => {
-    res.sendFile((path.join(__dirname, '../frontend/cadastroLoja/index.html')))
+    const sql = 'SELECT idLoja, nmLoja FROM lojas';
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar lojas:', err);
+            res.status(500).send('Erro ao buscar lojas');
+            return;
+        }
+        res.status(200).json(results);
+    });
 });
 
 // Endpoint para visualizar todos os setores
 app.get('/setores', (req, res) => {
-    res.sendFile((path.join(__dirname, '../frontend/cadastroSetor/index.html')))
+    const sql = 'SELECT idSetor, nmSetor FROM setores';
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar setores:', err);
+            res.status(500).send('Erro ao buscar setores');
+            return;
+        }
+        res.status(200).json(results);
+    });
 });
 
 
+// Endpoint para visualizar todos os setores
+app.get('/setores', (req, res) => {
+    
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Endpoint para excluir um usuário pelo nome
+app.delete('/users/:nome', async (req, res) => {
+    const nomeUsuario = req.params.nome;
+    try {
+        // Excluir o usuário do banco de dados pelo nome
+        pool.query('DELETE FROM Usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
+            if (err) {
+                console.error('Erro ao excluir usuário:', err);
+                res.status(500).send('Erro ao excluir usuário');
+                return;
+            }
+            if (results.affectedRows === 0) {
+                res.status(404).send('Usuário não encontrado');
+                return;
+            }
+            res.status(200).send(`Usuário "${nomeUsuario}" excluído com sucesso`);
+        });
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        res.status(500).send('Erro ao excluir usuário');
+    }
+});
 
 // Endpoint para buscar a lista de usuários
 app.get('/userlist', (req, res) => {
@@ -218,6 +220,24 @@ app.get('/userlist', (req, res) => {
         res.json(results); // Envia os resultados como resposta
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.get('/usersCad', (req, res) => {
@@ -246,28 +266,7 @@ app.get('/users/:id', (req, res) => {
 
 
 
-// Endpoint para excluir um usuário pelo nome
-app.delete('/users/:nome', async (req, res) => {
-    const nomeUsuario = req.params.nome;
-    try {
-        // Excluir o usuário do banco de dados pelo nome
-        pool.query('DELETE FROM Usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
-            if (err) {
-                console.error('Erro ao excluir usuário:', err);
-                res.status(500).send('Erro ao excluir usuário');
-                return;
-            }
-            if (results.affectedRows === 0) {
-                res.status(404).send('Usuário não encontrado');
-                return;
-            }
-            res.status(200).send(`Usuário "${nomeUsuario}" excluído com sucesso`);
-        });
-    } catch (error) {
-        console.error('Erro ao excluir usuário:', error);
-        res.status(500).send('Erro ao excluir usuário');
-    }
-});
+
 
 
 // Endpoint para buscar a lista de usuários disponíveis para exclusão/
@@ -339,9 +338,59 @@ app.get('/setores', (req, res) => {
     res.sendFile((path.join(__dirname, '../frontend/cadastroSetor/index.html')))
 });
 
+// Endpoint para cadastrar um novo setor
+app.post('/setores', async (req, res) => {
+    // Extrair informações do setor do corpo da solicitação
+    const { nmSetor } = req.body;
 
+    try {
+        // SQL para inserir o novo setor no banco de dados
+        const sql = 'INSERT INTO Setores (nmSetor) VALUES (?)';
 
+        // Executar a consulta SQL para inserir o setor
+        pool.query(sql, [nmSetor], (err, results) => {
+            if (err) {
+                console.error('Erro ao inserir o setor no banco de dados:', err);
+                res.status(500).send('Erro ao cadastrar o setor');
+                return;
+            }
+            res.status(201).send({
+                mensagem: 'Setor cadastrado com sucesso',
+                nmSetor: nmSetor
+            });
+        });
+    } catch (error) {
+        console.error('Erro ao cadastrar o setor:', error);
+        res.status(500).send('Erro ao processar o cadastro do setor');
+    }
+});
 
+// Endpoint para cadastrar uma nova loja
+app.post('/lojas', (req, res) => {
+    // Extrair informações da loja do corpo da solicitação
+    const { nmLoja } = req.body;
+
+    try {
+        // SQL para inserir a nova loja no banco de dados
+        const sql = 'INSERT INTO Lojas (nmLoja) VALUES (?)';
+
+        // Executar a consulta SQL para inserir a loja
+        pool.query(sql, [nmLoja], (err, results) => {
+            if (err) {
+                console.error('Erro ao inserir a loja no banco de dados:', err);
+                res.status(500).send('Erro ao cadastrar a loja');
+                return;
+            }
+            res.status(201).send({
+                mensagem: 'Loja criada com sucesso',
+                nmLoja: nmLoja
+            });
+        });
+    } catch (error) {
+        console.error('Erro ao cadastrar a loja:', error);
+        res.status(500).send('Erro ao processar o cadastro da loja');
+    }
+});
 
 
 
@@ -379,32 +428,7 @@ app.get('/lojas/:id', (req, res) => {
     });
 });
 
-// Endpoint para cadastrar uma nova loja
-app.post('/lojas', (req, res) => {
-    // Extrair informações da loja do corpo da solicitação
-    const { nmLoja } = req.body;
 
-    try {
-        // SQL para inserir a nova loja no banco de dados
-        const sql = 'INSERT INTO Lojas (nmLoja) VALUES (?)';
-
-        // Executar a consulta SQL para inserir a loja
-        pool.query(sql, [nmLoja], (err, results) => {
-            if (err) {
-                console.error('Erro ao inserir a loja no banco de dados:', err);
-                res.status(500).send('Erro ao cadastrar a loja');
-                return;
-            }
-            res.status(201).send({
-                mensagem: 'Loja criada com sucesso',
-                nmLoja: nmLoja
-            });
-        });
-    } catch (error) {
-        console.error('Erro ao cadastrar a loja:', error);
-        res.status(500).send('Erro ao processar o cadastro da loja');
-    }
-});
 
 // Endpoint para editar uma loja pelo ID
 app.put('/lojas/:id', async (req, res) => {
@@ -517,32 +541,7 @@ app.put('/setores/:id', async (req, res) => {
     }
 });
 
-// Endpoint para cadastrar um novo setor
-app.post('/setores', async (req, res) => {
-    // Extrair informações do setor do corpo da solicitação
-    const { nmSetor } = req.body;
 
-    try {
-        // SQL para inserir o novo setor no banco de dados
-        const sql = 'INSERT INTO Setores (nmSetor) VALUES (?)';
-
-        // Executar a consulta SQL para inserir o setor
-        pool.query(sql, [nmSetor], (err, results) => {
-            if (err) {
-                console.error('Erro ao inserir o setor no banco de dados:', err);
-                res.status(500).send('Erro ao cadastrar o setor');
-                return;
-            }
-            res.status(201).send({
-                mensagem: 'Setor cadastrado com sucesso',
-                nmSetor: nmSetor
-            });
-        });
-    } catch (error) {
-        console.error('Erro ao cadastrar o setor:', error);
-        res.status(500).send('Erro ao processar o cadastro do setor');
-    }
-});
 
 // Endpoint para excluir um setor pelo ID
 app.delete('/setores/:id', async (req, res) => {
