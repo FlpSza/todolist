@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';
 
@@ -27,7 +28,7 @@ const CadUser = () => {
 
         const fetchLojas = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/lojas');
+                const response = await axios.get('http://localhost:3000/storelist');
                 setLojas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar lojas:', error);
@@ -56,40 +57,42 @@ const CadUser = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.input}
-                placeholder="Nome"
-                value={nome}
-                onChangeText={text => setNome(text)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={text => setEmail(text)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Senha"
-                secureTextEntry={true}
-                value={senha}
-                onChangeText={text => setSenha(text)}
-            />
-            <RNPickerSelect
-                style={pickerSelectStyles}
-                placeholder={{ label: 'Selecione o setor', value: null }}
-                onValueChange={(value) => setSelectedSetor(value)}
-                items={setores.map(setor => ({ label: setor.nmSetor, value: setor.idSetor, key: setor.idSetor }))}
-            />
-            <RNPickerSelect
-                style={pickerSelectStyles}
-                placeholder={{ label: 'Selecione a loja', value: null }}
-                onValueChange={(value) => setSelectedLoja(value)}
-                items={lojas.map(loja => ({ label: loja.nmLoja, value: loja.idLoja, key: loja.idLoja }))}
-            />
-            <Button title="Cadastrar" onPress={handleAddUser} />
-        </View>
+        <><View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={24} color="blue" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Cadastro de lojas</Text>
+        </View><View style={styles.container}>
+                <View style={styles.formContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nome"
+                        value={nome}
+                        onChangeText={text => setNome(text)} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={text => setEmail(text)} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Senha"
+                        secureTextEntry={true}
+                        value={senha}
+                        onChangeText={text => setSenha(text)} />
+                    <RNPickerSelect
+                        style={pickerSelectStyles}
+                        placeholder={{ label: 'Selecione o setor', value: null }}
+                        onValueChange={(value) => setSelectedSetor(value)}
+                        items={setores.map(setor => ({ label: setor.nmSetor, value: setor.idSetor, key: setor.idSetor }))} />
+                    <RNPickerSelect
+                        style={pickerSelectStyles}
+                        placeholder={{ label: 'Selecione a loja', value: null }}
+                        onValueChange={(value) => setSelectedLoja(value)}
+                        items={lojas.map(loja => ({ label: loja.nmLoja, value: loja.idLoja, key: loja.idLoja }))} />
+                    <Button title="Cadastrar" onPress={handleAddUser} />
+                </View>
+            </View></>
     );
 };
 
@@ -100,6 +103,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        width: '100%', // Defina a largura total do cabeçalho
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
+    backButton: {
+        padding: 5,
+    },
+    formContainer: {
+        width: '100%',
+        marginTop: 20,
+        alignItems: 'flex-start',
+    },
     input: {
         width: '100%',
         height: 40,
@@ -107,7 +133,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 10,
         paddingHorizontal: 10
-    }
+    },
 });
 
 const pickerSelectStyles = StyleSheet.create({

@@ -154,7 +154,7 @@ app.get('/admin-dashboard', (req, res) => {
 });
 
 // Endpoint para visualizar todas as lojas
-app.get('/lojas', (req, res) => {
+app.get('/storelist', (req, res) => {
     const sql = 'SELECT idLoja, nmLoja FROM lojas';
     pool.query(sql, (err, results) => {
         if (err) {
@@ -221,7 +221,57 @@ app.get('/userlist', (req, res) => {
     });
 });
 
+// Endpoint para cadastrar uma nova loja
+app.post('/lojas', (req, res) => {
+    // Extrair informações da loja do corpo da solicitação
+    const { nmLoja } = req.body;
 
+    try {
+        // SQL para inserir a nova loja no banco de dados
+        const sql = 'INSERT INTO Lojas (nmLoja) VALUES (?)';
+
+        // Executar a consulta SQL para inserir a loja
+        pool.query(sql, [nmLoja], (err, results) => {
+            if (err) {
+                console.error('Erro ao inserir a loja no banco de dados:', err);
+                res.status(500).send('Erro ao cadastrar a loja');
+                return;
+            }
+            res.status(201).send({
+                mensagem: 'Loja criada com sucesso',
+                nmLoja: nmLoja
+            });
+        });
+    } catch (error) {
+        console.error('Erro ao cadastrar a loja:', error);
+        res.status(500).send('Erro ao processar o cadastro da loja');
+    }
+});
+
+// Endpoint para excluir uma loja pelo ID
+app.delete('/store/:id', async (req, res) => {
+    const lojaId = req.params.id;
+    try {
+        // Verificar se a loja existe
+        const lojaExists = await getLojaById(lojaId);
+        if (!lojaExists) {
+            res.status(404).send('Loja não encontrada');
+            return;
+        }
+        // Excluir a loja do banco de dados
+        pool.query('DELETE FROM Lojas WHERE idLoja = ?', [lojaId], (err, results) => {
+            if (err) {
+                console.error('Erro ao excluir loja:', err);
+                res.status(500).send('Erro ao excluir loja');
+                return;
+            }
+            res.status(200).send(`Loja com o ID ${lojaId} excluída com sucesso`);
+        });
+    } catch (error) {
+        console.error('Erro ao excluir loja:', error);
+        res.status(500).send('Erro ao excluir loja');
+    }
+});
 
 
 
@@ -365,33 +415,6 @@ app.post('/setores', async (req, res) => {
     }
 });
 
-// Endpoint para cadastrar uma nova loja
-app.post('/lojas', (req, res) => {
-    // Extrair informações da loja do corpo da solicitação
-    const { nmLoja } = req.body;
-
-    try {
-        // SQL para inserir a nova loja no banco de dados
-        const sql = 'INSERT INTO Lojas (nmLoja) VALUES (?)';
-
-        // Executar a consulta SQL para inserir a loja
-        pool.query(sql, [nmLoja], (err, results) => {
-            if (err) {
-                console.error('Erro ao inserir a loja no banco de dados:', err);
-                res.status(500).send('Erro ao cadastrar a loja');
-                return;
-            }
-            res.status(201).send({
-                mensagem: 'Loja criada com sucesso',
-                nmLoja: nmLoja
-            });
-        });
-    } catch (error) {
-        console.error('Erro ao cadastrar a loja:', error);
-        res.status(500).send('Erro ao processar o cadastro da loja');
-    }
-});
-
 
 
 
@@ -456,30 +479,7 @@ app.put('/lojas/:id', async (req, res) => {
     }
 });
 
-// Endpoint para excluir uma loja pelo ID
-app.delete('/lojas/:id', async (req, res) => {
-    const lojaId = req.params.id;
-    try {
-        // Verificar se a loja existe
-        const lojaExists = await getLojaById(lojaId);
-        if (!lojaExists) {
-            res.status(404).send('Loja não encontrada');
-            return;
-        }
-        // Excluir a loja do banco de dados
-        pool.query('DELETE FROM Lojas WHERE idLoja = ?', [lojaId], (err, results) => {
-            if (err) {
-                console.error('Erro ao excluir loja:', err);
-                res.status(500).send('Erro ao excluir loja');
-                return;
-            }
-            res.status(200).send(`Loja com o ID ${lojaId} excluída com sucesso`);
-        });
-    } catch (error) {
-        console.error('Erro ao excluir loja:', error);
-        res.status(500).send('Erro ao excluir loja');
-    }
-});
+
 
 // Função utilitária para buscar uma loja pelo ID
 async function getLojaById(lojaId) {

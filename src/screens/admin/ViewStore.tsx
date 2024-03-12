@@ -1,21 +1,83 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function ViewStore() {
     const navigation = useNavigation();
+    const [stores, setStores] = useState([]);
 
-    return (
-        <View style={styles.container}>
-            <Text>Essa vai ser a tela de Lojas da minha aplicação.</Text>
-            <StatusBar style="auto" />
-            <TouchableOpacity onPress={() => navigation.goBack()} style={ styles.header }>
-                <Text style={styles.backButton}>Voltar</Text>
+    useEffect(() => {
+    // Função para buscar a lista de lojas do backend
+    const fetchStores = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/storelist');
+        setStores(response.data); // Define as lojas obtidas na resposta
+      } catch (error) {
+        console.error('Erro ao buscar lista de lojas:', error);
+        // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
+      }
+    };
+
+    // Chama a função para buscar as lojas ao carregar o componente
+    fetchStores();
+  }, []);
+
+  const handleDeleteStore = async (storeId) => {
+    try {
+        if (!storeId) {
+            console.error('ID da loja inválido:', storeId);
+            return;
+        }
+        // Endpoint para excluir a loja
+        await axios.delete(`http://localhost:3000/store/${storeId}`);
+        // Atualiza a lista de lojas após a exclusão
+        setStores(stores.filter(store => store.idLoja !== storeId));
+    } catch (error) {
+        console.error('Erro ao excluir loja:', error);
+    }
+};
+    
+    const handleAddStore = () => {
+        // Navegar para a tela de cadastro de usuário
+        navigation.navigate('CadStore' as never); // Especificando 'CadStore' como never
+    };    
+
+    const renderItem = ({ item }) => (
+        <View style={styles.itemContainer}>
+            <View style={styles.userInfo}>
+                <Text>ID: {item.idLoja}</Text>
+                <Text style={styles.userInfoText}>| Nome: {item.nmLoja}</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleDeleteStore(item.idLoja)}>
+                <Ionicons name="trash-bin" size={24} color="red" />
             </TouchableOpacity>
         </View>
     );
-};
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={24} color="blue" />
+                </TouchableOpacity>
+                <Text style={styles.headerText}>LISTA DE LOJAS</Text>
+            </View>
+            <FlatList
+                style = {styles.flatlist}
+                data={stores}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.idLoja.toString()}
+            />
+            <TouchableOpacity onPress={handleAddStore} style={styles.addButton}>
+                <Ionicons name="add" size={24} color="white" />
+            </TouchableOpacity>
+            <StatusBar style="auto" />
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -27,12 +89,51 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         paddingHorizontal: 10,
         paddingTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '100%', // Defina a largura total do cabeçalho
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     backButton: {
-        fontSize: 18,
-        color: 'blue',
+        padding: 5,
+    },
+    itemContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    userInfo: {
+        flex: 1,
+        flexDirection: 'row', // Alinha os textos horizontalmente
+        alignItems: 'center', // Alinha os textos verticalmente
+        width: '100%', // Ocupa 100% da largura horizontalmente
+        justifyContent: 'space-between',
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: 'blue',
+        borderRadius: 30,
+        width: 60,
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    userInfoText: {
+        paddingRight: 20, // Distância fixa à direita de cada texto
+        width: '33.33%',
+    },
+    flatlist: {
+        width: '100%',
     },
 });
