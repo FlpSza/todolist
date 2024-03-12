@@ -27,7 +27,7 @@ const CadStore = () => {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="arrow-back" size={24} color="blue" />
             </TouchableOpacity>
-            <Text style={styles.headerText}>Cadastro de lojas</Text>
+            <Text style={styles.headerText}>Cadastro de Lojas</Text>
         </View>
         <View style={styles.container}>
             <TextInput

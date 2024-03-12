@@ -7,6 +7,7 @@ import ViewStore from '../screens/admin/ViewStore';
 import ViewSector from '../screens/admin/ViewSector';
 import CadUser from '../screens/admin/CadUser'
 import CadStore from '../screens/admin/CadStore'
+import CadSector from '../screens/admin/CadSector'
 
 // Crie o navegador raiz
 const Stack = createStackNavigator();
@@ -24,6 +25,7 @@ function AppNavigator() {
         <Stack.Screen name="ViewSector" component={ViewSector} />
         <Stack.Screen name="CadUser" component={CadUser}/>
         <Stack.Screen name="CadStore" component={CadStore}/>
+        <Stack.Screen name="CadSector" component={CadSector}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

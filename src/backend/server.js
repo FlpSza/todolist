@@ -167,7 +167,7 @@ app.get('/storelist', (req, res) => {
 });
 
 // Endpoint para visualizar todos os setores
-app.get('/setores', (req, res) => {
+app.get('/sectorlist', (req, res) => {
     const sql = 'SELECT idSetor, nmSetor FROM setores';
     pool.query(sql, (err, results) => {
         if (err) {
@@ -177,35 +177,6 @@ app.get('/setores', (req, res) => {
         }
         res.status(200).json(results);
     });
-});
-
-
-// Endpoint para visualizar todos os setores
-app.get('/setores', (req, res) => {
-    
-});
-
-// Endpoint para excluir um usuário pelo nome
-app.delete('/users/:nome', async (req, res) => {
-    const nomeUsuario = req.params.nome;
-    try {
-        // Excluir o usuário do banco de dados pelo nome
-        pool.query('DELETE FROM Usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
-            if (err) {
-                console.error('Erro ao excluir usuário:', err);
-                res.status(500).send('Erro ao excluir usuário');
-                return;
-            }
-            if (results.affectedRows === 0) {
-                res.status(404).send('Usuário não encontrado');
-                return;
-            }
-            res.status(200).send(`Usuário "${nomeUsuario}" excluído com sucesso`);
-        });
-    } catch (error) {
-        console.error('Erro ao excluir usuário:', error);
-        res.status(500).send('Erro ao excluir usuário');
-    }
 });
 
 // Endpoint para buscar a lista de usuários
@@ -248,6 +219,29 @@ app.post('/lojas', (req, res) => {
     }
 });
 
+// Endpoint para excluir um usuário pelo nome
+app.delete('/users/:nome', async (req, res) => {
+    const nomeUsuario = req.params.nome;
+    try {
+        // Excluir o usuário do banco de dados pelo nome
+        pool.query('DELETE FROM Usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
+            if (err) {
+                console.error('Erro ao excluir usuário:', err);
+                res.status(500).send('Erro ao excluir usuário');
+                return;
+            }
+            if (results.affectedRows === 0) {
+                res.status(404).send('Usuário não encontrado');
+                return;
+            }
+            res.status(200).send(`Usuário "${nomeUsuario}" excluído com sucesso`);
+        });
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        res.status(500).send('Erro ao excluir usuário');
+    }
+});
+
 // Endpoint para excluir uma loja pelo ID
 app.delete('/store/:id', async (req, res) => {
     const lojaId = req.params.id;
@@ -273,9 +267,57 @@ app.delete('/store/:id', async (req, res) => {
     }
 });
 
+// Endpoint para excluir um setor pelo ID
+app.delete('/sector/:id', async (req, res) => {
+    const setId = req.params.id;
+    try {
+        // Verificar se o setor existe
+        const setorExists = await getSetorById(setId);
+        if (!setorExists) {
+            res.status(404).send('Setor não encontrado');
+            return;
+        }
+        // Excluir o setor do banco de dados
+        pool.query('DELETE FROM Setores WHERE idSetor = ?', [setId], (err, results) => {
+            if (err) {
+                console.error('Erro ao excluir setor:', err);
+                res.status(500).send('Erro ao excluir setor');
+                return;
+            }
+            res.status(200).send(`Setor com o ID ${setId} excluído com sucesso`);
+        });
+    } catch (error) {
+        console.error('Erro ao excluir setor:', error);
+        res.status(500).send('Erro ao excluir setor');
+    }
+});
 
+// Endpoint para cadastrar um novo setor
+app.post('/setores', async (req, res) => {
+    // Extrair informações do setor do corpo da solicitação
+    const { nmSetor } = req.body;
 
+    try {
+        // SQL para inserir o novo setor no banco de dados
+        const sql = 'INSERT INTO Setores (nmSetor) VALUES (?)';
 
+        // Executar a consulta SQL para inserir o setor
+        pool.query(sql, [nmSetor], (err, results) => {
+            if (err) {
+                console.error('Erro ao inserir o setor no banco de dados:', err);
+                res.status(500).send('Erro ao cadastrar o setor');
+                return;
+            }
+            res.status(201).send({
+                mensagem: 'Setor cadastrado com sucesso',
+                nmSetor: nmSetor
+            });
+        });
+    } catch (error) {
+        console.error('Erro ao cadastrar o setor:', error);
+        res.status(500).send('Erro ao processar o cadastro do setor');
+    }
+});
 
 
 
@@ -388,32 +430,7 @@ app.get('/setores', (req, res) => {
     res.sendFile((path.join(__dirname, '../frontend/cadastroSetor/index.html')))
 });
 
-// Endpoint para cadastrar um novo setor
-app.post('/setores', async (req, res) => {
-    // Extrair informações do setor do corpo da solicitação
-    const { nmSetor } = req.body;
 
-    try {
-        // SQL para inserir o novo setor no banco de dados
-        const sql = 'INSERT INTO Setores (nmSetor) VALUES (?)';
-
-        // Executar a consulta SQL para inserir o setor
-        pool.query(sql, [nmSetor], (err, results) => {
-            if (err) {
-                console.error('Erro ao inserir o setor no banco de dados:', err);
-                res.status(500).send('Erro ao cadastrar o setor');
-                return;
-            }
-            res.status(201).send({
-                mensagem: 'Setor cadastrado com sucesso',
-                nmSetor: nmSetor
-            });
-        });
-    } catch (error) {
-        console.error('Erro ao cadastrar o setor:', error);
-        res.status(500).send('Erro ao processar o cadastro do setor');
-    }
-});
 
 
 
@@ -543,30 +560,7 @@ app.put('/setores/:id', async (req, res) => {
 
 
 
-// Endpoint para excluir um setor pelo ID
-app.delete('/setores/:id', async (req, res) => {
-    const setId = req.params.id;
-    try {
-        // Verificar se o setor existe
-        const setorExists = await getSetorById(setId);
-        if (!setorExists) {
-            res.status(404).send('Setor não encontrado');
-            return;
-        }
-        // Excluir o setor do banco de dados
-        pool.query('DELETE FROM Setores WHERE idSetor = ?', [setId], (err, results) => {
-            if (err) {
-                console.error('Erro ao excluir setor:', err);
-                res.status(500).send('Erro ao excluir setor');
-                return;
-            }
-            res.status(200).send(`Setor com o ID ${setId} excluído com sucesso`);
-        });
-    } catch (error) {
-        console.error('Erro ao excluir setor:', error);
-        res.status(500).send('Erro ao excluir setor');
-    }
-});
+
 
 // Função utilitária para buscar um setor pelo ID
 async function getSetorById(setId) {

@@ -68,9 +68,9 @@ export default function ViewUser() {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idUsuario.toString()}
             />
-            <TouchableOpacity onPress={handleAddUser} style={styles.addButton}>
+            {/* <TouchableOpacity onPress={handleAddUser} style={styles.addButton}>
                 <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <StatusBar style="auto" />
         </View>
     );

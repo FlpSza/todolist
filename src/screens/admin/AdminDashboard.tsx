@@ -24,15 +24,15 @@ const Cadastro = () => {
   const navigation = useNavigation<any>();
 
   const handleButton1Press = () => {
-    navigation.navigate('ViewUser');
+    navigation.navigate('CadUser');
   };
 
   const handleButton2Press = () => {
-    navigation.navigate('ViewStore');
+    navigation.navigate('CadStore');
   };
 
   const handleButton3Press = () => {
-    navigation.navigate('ViewSector');
+    navigation.navigate('CadSector');
   };
 
   return (
@@ -66,18 +66,6 @@ const Cadastro = () => {
   );
 };
 
-const Setores = () => {
-  return (
-    <Text>Setores</Text>
-  );
-};
-
-const Lojas = () => {
-  return (
-    <Text>Lojas</Text>
-  );
-};
-
 const MyComponent = () => {
   return (
     <Tab.Navigator>
@@ -105,7 +93,7 @@ const MyComponent = () => {
       />
       <Tab.Screen
         name="Setores"
-        component={Setores}
+        component={ViewSector} // Altere o componente para a tela ViewSector
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name={focused ? 'store' : 'store-outline'} size={size} color={color} />
@@ -116,7 +104,7 @@ const MyComponent = () => {
       />
       <Tab.Screen
         name="Lojas"
-        component={Lojas}
+        component={ViewStore} // Altere o componente para a tela ViewStore
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name={focused ? 'shopping' : 'shopping-outline'} size={size} color={color} />

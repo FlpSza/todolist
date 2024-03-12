@@ -71,9 +71,9 @@ export default function ViewStore() {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idLoja.toString()}
             />
-            <TouchableOpacity onPress={handleAddStore} style={styles.addButton}>
+            {/* <TouchableOpacity onPress={handleAddStore} style={styles.addButton}>
                 <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <StatusBar style="auto" />
         </View>
     );
