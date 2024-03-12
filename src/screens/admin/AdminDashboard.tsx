@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 const AdminDashboard = () => {
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={styles.imageContainer}>
+      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.imageContainer, {opacity: 0.3}]}>
       </ImageBackground>
     </View>
   );
@@ -37,10 +37,10 @@ const Cadastro = () => {
 
   return (
 <View style={styles.container}>
-  <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={styles.imageContainer}>
-    <View style={styles.content}>
+  <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.imageContainer, {opacity: 0.3}]}>  </ImageBackground>
+    <View style={styles.contentUsers}>
       {/* Conteúdo do Cadastro aqui */}
-    </View>
+    
     <View style={styles.buttonContainer}>
       <IconButton
         icon="account-plus"
@@ -61,7 +61,7 @@ const Cadastro = () => {
         style={styles.button}
       />
     </View>
-  </ImageBackground>
+    </View>
 </View>
   );
 };
@@ -79,29 +79,53 @@ const Lojas = () => {
 };
 
 const MyComponent = () => {
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'AdminDashboard', title: 'Home', icon: 'home' },
-    { key: 'Cadastro', title: 'Cadastro', icon: 'account-plus' },
-    { key: 'Setores', title: 'Setores', icon: 'store' },
-    { key: 'Lojas', title: 'Lojas', icon: 'shopping' },
-  ]);
-
-  const renderScene = BottomNavigation.SceneMap({
-    AdminDashboard: AdminDashboard,
-    Cadastro: Cadastro,
-    Setores: Setores,
-    Lojas: Lojas,
-  });
-
   return (
-    <View style={{ flex: 1 }}>
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={AdminDashboard}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+          ),
+          tabBarLabel: 'Home',
+          headerShown: false,
+        }}
       />
-    </View>
+      <Tab.Screen
+        name="Cadastro"
+        component={Cadastro}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'account-plus' : 'account-plus-outline'} size={size} color={color} />
+          ),
+          tabBarLabel: 'Cadastro',
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Setores"
+        component={Setores}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'store' : 'store-outline'} size={size} color={color} />
+          ),
+          tabBarLabel: 'Setores',
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Lojas"
+        component={Lojas}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'shopping' : 'shopping-outline'} size={size} color={color} />
+          ),
+          tabBarLabel: 'Lojas',
+          headerShown: false,
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
@@ -116,6 +140,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela
     height: '100%', // Ajusta a altura para ocupar toda a altura da tela
+  },
+  contentUsers: {
+    width: '100%', // Ajusta a largura para ocupar toda a largura da tela
+    height: '20%', // Ajusta a altura para ocupar toda a altura da tela
   },
   content: {
     flex: 1, // Isso fará com que este conteúdo ocupe todo o espaço disponível
