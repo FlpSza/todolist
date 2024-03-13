@@ -19,7 +19,7 @@ const CadUser = () => {
     useEffect(() => {
         const fetchSetores = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/setores');
+                const response = await axios.get('http://localhost:3000/sectorlist');
                 setSetores(response.data);
             } catch (error) {
                 console.error('Erro ao buscar setores:', error);

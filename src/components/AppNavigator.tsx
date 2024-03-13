@@ -8,6 +8,8 @@ import ViewSector from '../screens/admin/ViewSector';
 import CadUser from '../screens/admin/CadUser'
 import CadStore from '../screens/admin/CadStore'
 import CadSector from '../screens/admin/CadSector'
+// import AsgDashboard from '../screens/users/AsgDashboard'
+// import BarDashboard from '../screens/users/BarDashboard'
 
 // Crie o navegador raiz
 const Stack = createStackNavigator();
@@ -26,6 +28,8 @@ function AppNavigator() {
         <Stack.Screen name="CadUser" component={CadUser}/>
         <Stack.Screen name="CadStore" component={CadStore}/>
         <Stack.Screen name="CadSector" component={CadSector}/>
+        {/* <Stack.Screen name="AsgDeshboard" component={AsgDashboard}/>
+        <Stack.Screen name="BarDeshboard" component={BarDashboard}/> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

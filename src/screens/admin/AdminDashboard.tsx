@@ -24,7 +24,7 @@ const Cadastro = () => {
   const navigation = useNavigation<any>();
 
   const handleButton1Press = () => {
-    navigation.navigate('CadUser');
+    navigation.navigate('ViewUser');
   };
 
   const handleButton2Press = () => {

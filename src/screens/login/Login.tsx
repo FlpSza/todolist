@@ -59,9 +59,9 @@ export default function Login() {
       } else if (idSetor === 4) {
         navigation.navigate('AsgDashboard');
       } else if (idSetor === 5) {
-        navigation.navigate('CozDashboard');
+        navigation.navigate('CozinhaDashboard');
       } else if (idSetor === 6) {
-        navigation.navigate('ProdDashboard');
+        navigation.navigate('ProducaoDashboard');
       } else {
         console.error('Setor de usuário desconhecido:', idSetor);
         // Redirecionar para uma tela de erro ou para a tela inicial
