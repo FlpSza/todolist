@@ -9,41 +9,35 @@ export default function ViewStore() {
     const navigation = useNavigation();
     const [stores, setStores] = useState([]);
 
-    useEffect(() => {
-    // Função para buscar a lista de lojas do backend
     const fetchStores = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/storelist');
-        setStores(response.data); // Define as lojas obtidas na resposta
-      } catch (error) {
-        console.error('Erro ao buscar lista de lojas:', error);
-        // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
-      }
+        try {
+            const response = await axios.get('http://localhost:3000/storelist');
+            setStores(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar lista de lojas:', error);
+        }
     };
 
-    // Chama a função para buscar as lojas ao carregar o componente
-    fetchStores();
-  }, []);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchStores();
+        });
 
-  const handleDeleteStore = async (storeId) => {
-    try {
-        if (!storeId) {
-            console.error('ID da loja inválido:', storeId);
-            return;
+        return unsubscribe;
+    }, [navigation]);
+
+    const handleDeleteStore = async (storeId) => {
+        try {
+            await axios.delete(`http://localhost:3000/store/${storeId}`);
+            setStores(stores.filter(store => store.idLoja !== storeId));
+        } catch (error) {
+            console.error('Erro ao excluir loja:', error);
         }
-        // Endpoint para excluir a loja
-        await axios.delete(`http://localhost:3000/store/${storeId}`);
-        // Atualiza a lista de lojas após a exclusão
-        setStores(stores.filter(store => store.idLoja !== storeId));
-    } catch (error) {
-        console.error('Erro ao excluir loja:', error);
-    }
-};
+    };
     
     const handleAddStore = () => {
-        // Navegar para a tela de cadastro de usuário
-        navigation.navigate('CadStore' as never); // Especificando 'CadStore' como never
-    };    
+        navigation.navigate('CadStore' as never);
+    };
 
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
@@ -66,14 +60,14 @@ export default function ViewStore() {
                 <Text style={styles.headerText}>LISTA DE LOJAS</Text>
             </View>
             <FlatList
-                style = {styles.flatlist}
+                style={styles.flatlist}
                 data={stores}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idLoja.toString()}
             />
-            {/* <TouchableOpacity onPress={handleAddStore} style={styles.addButton}>
+            <TouchableOpacity onPress={handleAddStore} style={styles.addButton}>
                 <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <StatusBar style="auto" />
         </View>
     );

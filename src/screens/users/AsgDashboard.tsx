@@ -1,82 +1,67 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, TextInput, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
 const AsgDashboard = () => {
-  // Estado para armazenar as respostas do usuário
-  const [answers, setAnswers] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
 
-  // Função para manipular a seleção de uma opção (Sim/Não) para uma pergunta
-  const handleOptionPress = (index, option) => {
-    // Atualiza o estado das respostas com a nova seleção para a pergunta específica
-    const updatedAnswers = [...answers];
-    updatedAnswers[index] = option;
-    setAnswers(updatedAnswers);
+  useEffect(() => {
+    // Função para buscar as perguntas do questionário associado ao setor do usuário
+    const fetchQuestions = async () => {
+      try {
+        // Substitua este trecho de código com sua lógica real para buscar as perguntas do banco de dados
+        const response = await axios.get(`URL_PARA_BUSCAR_PERGUNTAS_DO_QUESTIONARIO_DO_SETOR_${idDoSetor}`);
+        setQuestions(response.data); // Define as perguntas obtidas na resposta
+      } catch (error) {
+        console.error('Erro ao buscar perguntas:', error);
+        // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
+      }
+    };
+
+    // Chama a função para buscar as perguntas ao carregar o componente
+    fetchQuestions();
+  }, []);
+
+  // Função para atualizar a resposta do usuário para uma determinada pergunta
+  const handleAnswerChange = (questionId, text) => {
+    setAnswers({ ...answers, [questionId]: text });
   };
 
-  // Função para manipular a inserção de uma observação para uma pergunta
-  const handleObservationChange = (index, observation) => {
-    // Atualiza o estado das respostas com a nova observação para a pergunta específica
-    const updatedAnswers = [...answers];
-    updatedAnswers[index] = { ...updatedAnswers[index], observation };
-    setAnswers(updatedAnswers);
+  // Função para enviar as respostas do checklist para o servidor
+  const submitChecklist = async () => {
+    try {
+      // Substitua este trecho de código com sua lógica real para enviar as respostas para o servidor
+      const response = await axios.post('URL_PARA_ENVIAR_RESPOSTAS', {
+        respostas: answers,
+      });
+      Alert.alert('Sucesso', 'Respostas enviadas com sucesso');
+      // Lógica adicional após o envio bem-sucedido, se necessário
+    } catch (error) {
+      console.error('Erro ao enviar respostas do checklist:', error);
+      Alert.alert('Erro', 'Erro ao enviar respostas do checklist. Por favor, tente novamente.');
+      // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
+    }
   };
 
-  // Função para enviar o checklist
-  const handleSubmitChecklist = () => {
-    // Implemente a lógica para enviar as respostas do checklist
-    console.log('Respostas do Checklist:', answers);
-  };
-
-  // Perguntas e opções de resposta (sim/não)
-  const questions = [
-    {
-      question: 'Pergunta 1: Exemplo de pergunta 1?',
-      options: ['Sim', 'Não'],
-    },
-    {
-      question: 'Pergunta 2: Exemplo de pergunta 2?',
-      options: ['Sim', 'Não'],
-    },
-    // Adicione mais perguntas conforme necessário
-  ];
+  // Função para renderizar cada pergunta do checklist
+  const renderQuestion = (question) => (
+    <View key={question.idPergunta} style={styles.questionContainer}>
+      <Text style={styles.questionText}>{question.textoPergunta}</Text>
+      <TextInput
+        style={styles.answerInput}
+        placeholder="Resposta"
+        value={answers[question.idPergunta] || ''}
+        onChangeText={(text) => handleAnswerChange(question.idPergunta, text)}
+      />
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.body}>
-        {/* Renderização das perguntas */}
-        {questions.map((item, index) => (
-          <View key={index} style={styles.questionContainer}>
-            <Text style={styles.questionText}>{item.question}</Text>
-            {/* Opções de resposta (Sim/Não) */}
-            <View style={styles.optionsContainer}>
-              {item.options.map((option, optionIndex) => (
-                <TouchableOpacity
-                  key={optionIndex}
-                  style={[
-                    styles.optionButton,
-                    answers[index] === option ? { backgroundColor: 'green' } : null,
-                  ]}
-                  onPress={() => handleOptionPress(index, option)}
-                >
-                  <Text style={styles.optionButtonText}>{option}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            {/* Campo de observação */}
-            <TextInput
-              style={styles.observationInput}
-              placeholder="Observações"
-              multiline={true}
-              value={answers[index]?.observation || ''}
-              onChangeText={(text) => handleObservationChange(index, text)}
-            />
-          </View>
-        ))}
-      </ScrollView>
-      {/* Botão para enviar o checklist */}
-      <View style={styles.footer}>
-        <Button title="Enviar Checklist" onPress={handleSubmitChecklist} />
-      </View>
+      <Text style={styles.title}>Checklist</Text>
+      {questions.map(renderQuestion)}
+      <Button title="Enviar Checklist" onPress={submitChecklist} />
     </View>
   );
 };
@@ -84,44 +69,28 @@ const AsgDashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  body: {
-    flex: 1,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   questionContainer: {
     marginBottom: 20,
   },
   questionText: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
   },
-  optionsContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  optionButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  optionButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  observationInput: {
+  answerInput: {
+    width: '100%',
+    height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    minHeight: 100,
-  },
-  footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    paddingHorizontal: 10,
   },
 });
 

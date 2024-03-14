@@ -35,34 +35,44 @@ const Cadastro = () => {
     navigation.navigate('CadSector');
   };
 
+  const handleButton4Press = () => {
+    navigation.navigate('CadPergunta');
+  };
+
   return (
-<View style={styles.container}>
-  <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.imageContainer, {opacity: 0.3}]}>  </ImageBackground>
-    <View style={styles.contentUsers}>
-      {/* Conteúdo do Cadastro aqui */}
-    
-    <View style={styles.buttonContainer}>
-      <IconButton
-        icon="account-plus"
-        size={50}
-        onPress={handleButton1Press}
-        style={styles.button}
-      />
-      <IconButton
-        icon="store"
-        size={50}
-        onPress={handleButton2Press}
-        style={styles.button}
-      />
-      <IconButton
-        icon="format-list-bulleted"
-        size={50}
-        onPress={handleButton3Press}
-        style={styles.button}
-      />
+    <View style={styles.container}>
+      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.imageContainer, {opacity: 0.3}]}>
+        {/* Conteúdo do Cadastro aqui */}
+        <View style={styles.contentUsers}>
+          <View style={styles.buttonContainer}>
+            <IconButton
+              icon="account-plus"
+              size={50}
+              onPress={handleButton1Press}
+              style={styles.button}
+            />
+            <IconButton
+              icon="store"
+              size={50}
+              onPress={handleButton2Press}
+              style={styles.button}
+            />
+            <IconButton
+              icon="format-list-bulleted"
+              size={50}
+              onPress={handleButton3Press}
+              style={styles.button}
+            />
+            <IconButton
+              icon="plus-circle"
+              size={50}
+              onPress={handleButton4Press}
+              style={styles.button}
+            />
+          </View>
+        </View>
+      </ImageBackground>
     </View>
-    </View>
-</View>
   );
 };
 

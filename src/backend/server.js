@@ -321,6 +321,129 @@ app.post('/setores', async (req, res) => {
 
 
 
+//Perguntas e Respostas
+
+// Tabela perguntas: Armazena as perguntas do checklist, com informações como o texto da pergunta e o tipo de resposta esperada (por exemplo, "Sim/Não", "Texto livre", etc.).
+
+// Tabela questionarios: Representa um conjunto de perguntas agrupadas para um determinado setor. Cada questionário possui um título e está associado a um setor específico.
+
+// Tabela respostas: Armazena as respostas dos usuários às perguntas do checklist. Cada resposta está associada a uma pergunta específica, a um usuário e contém o texto da resposta.
+
+
+
+//Endpooint para obter todas as pergunta de um questionario especifico
+app.get('/questionarios/:idQuestionario/perguntas', (req, res) => {
+    const idQuestionario = req.params.idQuestionario;
+    const sql = `SELECT * FROM perguntas WHERE idQuestionario = ?`;
+
+    pool.query(sql, [idQuestionario], (err, results) => {
+        if(err) {
+            console.error('Erro ao buscar perguntas: ', err);
+            res.status(500).send('Erro ao buscar perguntas');
+            return;
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Endpoint para criar uma nova pergunta
+app.post('/perguntas', (req, res) => {
+    const {idQuestionario, textoPergunta, tipoResposta} = req.body;
+    const sql = 'INSERT INTO perguntas (idQuestionario, textoPergunta, tipoResposta) VALUES (?, ?, ?)';
+
+    pool.query(sql, [idQuestionario, textoPergunta, tipoResposta], (err, results) => {
+        if(err) {
+            console.error('Erro ao cadastrar pergunta:', err);
+            res.status(500). send('Erro ao cadastrar pergunta');
+            return;
+        };
+        res.status(201).send('Pergunta cadastrada com sucesso');
+    });
+});
+
+//Endpoint para registrar uma resposta do usuário
+app.post('/respostas', (req, res) => {
+    const { idPergunta, idUsuario, resposta } = req.body;
+    const sql = 'INSERT INTO respostas (idPergunta, idUsuario, resposta) VALUES (?, ?, ?)';
+    
+    pool.query(sql, [idPergunta, idUsuario, resposta], (err, results) => {
+        if(err) {
+            console.error('Erro ao registrar resposta: ', err);
+            res.status(500).send('Erro ao registrar resposta');
+            return;
+        }
+        res.status(200).send('Resposta registrada com sucesso');
+    });
+});
+
+//endpoint para atualizar uma resposta do usuário
+app.put('respostas/:idResposta', (req, res) => {
+    const idResposta = req.params.idResposta;
+    const { resposta } = req.body;
+    const sql = 'UPDATE respostas SET resposta = ? WHERE idResposta = ?';
+
+    pool.query(sql, [resposta, idResposta], (err, results) => {
+        if(err) {
+            console.error('Erro ao atualizar resposta: ', err);
+            res.status(500).send('Erro ao atualizar resposta');
+            return;
+        }
+        res.status(200).send('Resposta atualizada com sucesso');
+    });
+});
+
+//Endpoint para excluir uma pergunta
+app.delete('/perguntas/:idPergunta', (req, res) => {
+    const idPergunta = req.params.idPergunta;
+    const sql = `DELETE FROM perguntas WHERE idPergunta = ?`;
+
+    pool.query(sql, [idPergunta], (err, results) => {
+        if(err) {
+            console.error('Erro ao excluir pergunta');
+            res.status(500).send('Erro ao excluir pergunta');
+            return;
+        }
+        res.status(200).send('Pergunta deletada com sucesso');
+    });
+});
+
+//Endpoint para excluir uma resposta
+app.delete('/resposta/:idResposta', (req, res) => {
+    const idResposta = req.params.idResposta;
+    const sql = 'DELETE FROM respostas WHERE idResposta = ?';
+    
+    pool.query(sql, [idResposta], (err, results) => {
+        if(err) {
+            console.error('Errp ao excluir resposta');
+            res.status(500).send('Erro ao excluir resposta');
+            return;
+        }
+        res.status(200).send('Resposta excluida com sucesso');
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

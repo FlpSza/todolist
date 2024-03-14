@@ -9,31 +9,26 @@ export default function ViewSector() {
     const navigation = useNavigation();
     const [sectors, setSectors] = useState([]);
 
-    useEffect(() => {
-        // Função para buscar a lista de setores do backend
-        const fetchSectors = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/sectorlist');
-                setSectors(response.data); // Define os setores obtidos na resposta
-            } catch (error) {
-                console.error('Erro ao buscar lista de setores:', error);
-                // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
-            }
-        };
+    const fetchSectors = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/sectorlist');
+            setSectors(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar lista de setores:', error);
+        }
+    };
 
-        // Chama a função para buscar os setores ao carregar o componente
-        fetchSectors();
-    }, []);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchSectors();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     const handleDeleteSector = async (sectorId) => {
         try {
-            if (!sectorId) {
-                console.error('ID do Setor inválido:', sectorId);
-                return;
-            }
-            // Endpoint para excluir o setor
             await axios.delete(`http://localhost:3000/sector/${sectorId}`);
-            // Atualiza a lista de setores após a exclusão
             setSectors(sectors.filter(sector => sector.idSetor !== sectorId));
         } catch (error) {
             console.error('Erro ao excluir setor:', error);
@@ -41,8 +36,7 @@ export default function ViewSector() {
     };
 
     const handleAddSector = () => {
-        // Navegar para a tela de cadastro de setor
-        navigation.navigate('CadSector' as never); // Especificando 'CadSetor' como never
+        navigation.navigate('CadSector' as never);
     };
 
     const renderItem = ({ item }) => (
@@ -71,9 +65,9 @@ export default function ViewSector() {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idSetor.toString()}
             />
-            {/* <TouchableOpacity onPress={handleAddSector} style={styles.addButton}>
+            <TouchableOpacity onPress={handleAddSector} style={styles.addButton}>
                 <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <StatusBar style="auto" />
         </View>
     );
