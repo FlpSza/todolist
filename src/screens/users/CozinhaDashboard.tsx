@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 const backgroundImg = require('../../../assets/smallLogoBlue.png');
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-const BarDashboard = ({ navigation }) => {
+const CozinhaDashboard = ({ navigation }) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const handleMenuPress = () => {
@@ -16,7 +16,7 @@ const BarDashboard = ({ navigation }) => {
   const handleOptionSelect = (option) => {
       if (option === 'checklist') {
           // Navegar para a tela de checklist
-          navigation.navigate('Bar.tsx');
+          navigation.navigate('Cozinha.tsx');
           console.log('Checklist')
       } else if (option === 'logout') {
           // Limpar o token de autenticação e redirecionar para a tela de login
@@ -34,7 +34,7 @@ const BarDashboard = ({ navigation }) => {
   return (
       <>
           <Appbar.Header>
-              <Appbar.Content title="Central Bar" subtitle={'Subtitle'} />
+              <Appbar.Content title="Central Cozinha" subtitle={'Subtitle'} />
               <Appbar.Action icon={MORE_ICON} onPress={handleMenuPress} />
           </Appbar.Header>
           <View style={styles.container}>
@@ -83,5 +83,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BarDashboard;
+export default CozinhaDashboard;
 
