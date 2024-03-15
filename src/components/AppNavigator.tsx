@@ -8,6 +8,9 @@ import ViewSector from '../screens/admin/ViewSector';
 import CadUser from '../screens/admin/CadUser'
 import CadStore from '../screens/admin/CadStore'
 import CadSector from '../screens/admin/CadSector'
+import AsgDashboard from '../screens/users/AsgDashboard';
+import CadPergunta from '../components/CadPergunta';
+// import Asg from '../screens/checklist/Asg';
 // import AsgDashboard from '../screens/users/AsgDashboard'
 // import BarDashboard from '../screens/users/BarDashboard'
 
@@ -22,12 +25,15 @@ function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+        <Stack.Screen name="AsgDashboard" component={AsgDashboard}/>
         <Stack.Screen name="ViewUser" component={ViewUser} />
         <Stack.Screen name="ViewStore" component={ViewStore} />
         <Stack.Screen name="ViewSector" component={ViewSector} />
         <Stack.Screen name="CadUser" component={CadUser}/>
         <Stack.Screen name="CadStore" component={CadStore}/>
         <Stack.Screen name="CadSector" component={CadSector}/>
+        <Stack.Screen name= "CadPergunta" component={CadPergunta}/>
+        {/* <Stack.Screen name="Asg" component={Asg}/> */}
         {/* <Stack.Screen name="AsgDeshboard" component={AsgDashboard}/>
         <Stack.Screen name="BarDeshboard" component={BarDashboard}/> */}
       </Stack.Navigator>

@@ -1,16 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
 
 const CadPergunta = () => {
   const [textoPergunta, setTextoPergunta] = useState('');
-  const [tipoResposta, setTipoResposta] = useState('');
+  const [idSetor, setIdSetor] = useState('');
+  const [setores, setSetores] = useState([]);
+
+  useEffect(() => {
+    // Aqui você pode fazer uma requisição para obter a lista de setores do backend
+    // Exemplo:
+    axios.get('http://localhost:3000/sectorlist')
+      .then(response => {
+        setSetores(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao obter setores:', error);
+      });
+  }, []);
 
   const handleCadastroPergunta = () => {
     // Aqui você pode implementar a lógica para enviar os dados para o backend e cadastrar a pergunta
+    const novaPergunta = {
+      idQuestionario: 1, // Defina o ID do questionário conforme necessário
+      textoPergunta,
+      idSetor
+    };
 
-    // Limpa os campos após o cadastro
-    setTextoPergunta('');
-    setTipoResposta('');
+    axios.post('http://localhost:3000/perguntas', novaPergunta)
+      .then(response => {
+        console.log('Pergunta cadastrada com sucesso:', response.data);
+        // Limpa os campos após o cadastro
+        setTextoPergunta('');
+        setIdSetor('');
+      })
+      .catch(error => {
+        console.error('Erro ao cadastrar pergunta:', error);
+      });
   };
 
   return (
@@ -22,13 +49,17 @@ const CadPergunta = () => {
         onChangeText={setTextoPergunta}
         placeholder="Digite o texto da pergunta"
       />
-      <Text style={styles.label}>Tipo de Resposta:</Text>
-      <TextInput
-        style={styles.input}
-        value={tipoResposta}
-        onChangeText={setTipoResposta}
-        placeholder="Digite o tipo de resposta"
-      />
+      <Text style={styles.label}>Setor:</Text>
+      <Picker
+  selectedValue={idSetor}
+  onValueChange={(itemValue) => setIdSetor(itemValue)}
+>
+  <Picker.Item label="Selecione um setor..." value="" />
+  {setores.map(setor => (
+    <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor} />
+  ))}
+</Picker>
+
       <Button title="Cadastrar Pergunta" onPress={handleCadastroPergunta} />
     </View>
   );

@@ -1,97 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Appbar } from 'react-native-paper';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Dimensions } from 'react-native';
+import { Platform } from 'react-native';
 
-const AsgDashboard = () => {
-  const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState({});
+const backgroundImg = require('../../../assets/smallLogoBlue.png');
+const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-  useEffect(() => {
-    // Função para buscar as perguntas do questionário associado ao setor do usuário
-    const fetchQuestions = async () => {
-      try {
-        // Substitua este trecho de código com sua lógica real para buscar as perguntas do banco de dados
-        const response = await axios.get(`URL_PARA_BUSCAR_PERGUNTAS_DO_QUESTIONARIO_DO_SETOR_${idDoSetor}`);
-        setQuestions(response.data); // Define as perguntas obtidas na resposta
-      } catch (error) {
-        console.error('Erro ao buscar perguntas:', error);
-        // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
+const AsgDashboard = ({ navigation }) => {
+  const [showOptions, setShowOptions] = useState(false);
+
+  const handleMenuPress = () => {
+      setShowOptions(!showOptions);
+  };
+
+  const handleOptionSelect = (option) => {
+      if (option === 'checklist') {
+          // Navegar para a tela de checklist
+          navigation.navigate('Asg.tsx');
+          console.log('Checklist')
+      } else if (option === 'logout') {
+          // Limpar o token de autenticação e redirecionar para a tela de login
+          handleLogout();
+          console.log('Logout')
       }
-    };
-
-    // Chama a função para buscar as perguntas ao carregar o componente
-    fetchQuestions();
-  }, []);
-
-  // Função para atualizar a resposta do usuário para uma determinada pergunta
-  const handleAnswerChange = (questionId, text) => {
-    setAnswers({ ...answers, [questionId]: text });
+      setShowOptions(false);
   };
 
-  // Função para enviar as respostas do checklist para o servidor
-  const submitChecklist = async () => {
-    try {
-      // Substitua este trecho de código com sua lógica real para enviar as respostas para o servidor
-      const response = await axios.post('URL_PARA_ENVIAR_RESPOSTAS', {
-        respostas: answers,
-      });
-      Alert.alert('Sucesso', 'Respostas enviadas com sucesso');
-      // Lógica adicional após o envio bem-sucedido, se necessário
-    } catch (error) {
-      console.error('Erro ao enviar respostas do checklist:', error);
-      Alert.alert('Erro', 'Erro ao enviar respostas do checklist. Por favor, tente novamente.');
-      // Trate o erro adequadamente (exibindo uma mensagem de erro, por exemplo)
-    }
+  const handleLogout = () => {
+      // Depois de limpar as informações de autenticação, navegue de volta para a tela de login
+      navigation.navigate('Login');
   };
-
-  // Função para renderizar cada pergunta do checklist
-  const renderQuestion = (question) => (
-    <View key={question.idPergunta} style={styles.questionContainer}>
-      <Text style={styles.questionText}>{question.textoPergunta}</Text>
-      <TextInput
-        style={styles.answerInput}
-        placeholder="Resposta"
-        value={answers[question.idPergunta] || ''}
-        onChangeText={(text) => handleAnswerChange(question.idPergunta, text)}
-      />
-    </View>
-  );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Checklist</Text>
-      {questions.map(renderQuestion)}
-      <Button title="Enviar Checklist" onPress={submitChecklist} />
-    </View>
+      <>
+          <Appbar.Header>
+              <Appbar.Content title="Central Asg" subtitle={'Subtitle'} />
+              <Appbar.Action icon={MORE_ICON} onPress={handleMenuPress} />
+          </Appbar.Header>
+          <View style={styles.container}>
+              <ImageBackground source={backgroundImg} style={styles.backgroundImg} />
+              <View style={[styles.optionsContainer, showOptions ? null : styles.hidden]}>
+                  <TouchableOpacity style={styles.option} onPress={() => handleOptionSelect('checklist')}>
+                      <Text style={styles.optionText}>Checklist</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.option} onPress={() => handleOptionSelect('logout')}>
+                      <Text style={styles.optionText}>Logout</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  questionContainer: {
-    marginBottom: 20,
-  },
-  questionText: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  answerInput: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-  },
+    container: {
+        flex: 1,
+        position: 'relative',
+    },
+    backgroundImg: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+        opacity: 0.5,
+    },
+    optionsContainer: {
+      position: 'absolute',
+      top: -15, // Ajuste conforme necessário para não cobrir os botões
+      right: 1,
+      backgroundColor: 'white',
+      borderRadius: 5,
+      padding: 10,
+    },
+    option: {
+        paddingVertical: 8,
+    },
+    optionText: {
+        fontSize: 16,
+        zIndex: 1
+    },
+    hidden: {
+      display: 'none',
+    },
 });
 
 export default AsgDashboard;
+
