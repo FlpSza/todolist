@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
+import { useNavigation } from '@react-navigation/native';
+
 
 const CadPergunta = () => {
+  const navigation = useNavigation();
   const [textoPergunta, setTextoPergunta] = useState('');
   const [idSetor, setIdSetor] = useState('');
   const [setores, setSetores] = useState([]);
@@ -41,27 +45,35 @@ const CadPergunta = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Texto da Pergunta:</Text>
-      <TextInput
-        style={styles.input}
-        value={textoPergunta}
-        onChangeText={setTextoPergunta}
-        placeholder="Digite o texto da pergunta"
-      />
-      <Text style={styles.label}>Setor:</Text>
-      <Picker
-  selectedValue={idSetor}
-  onValueChange={(itemValue) => setIdSetor(itemValue)}
->
-  <Picker.Item label="Selecione um setor..." value="" />
-  {setores.map(setor => (
-    <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor} />
-  ))}
-</Picker>
-
-      <Button title="Cadastrar Pergunta" onPress={handleCadastroPergunta} />
+    <>            
+    <View style={styles.header}>
+    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="blue" />
+    </TouchableOpacity>
+    <Text style={styles.headerText}>Adicionar pergunta</Text>
     </View>
+
+    <View style={styles.container}>
+
+        <Text style={styles.label}>Texto da Pergunta:</Text>
+        <TextInput
+          style={styles.input}
+          value={textoPergunta}
+          onChangeText={setTextoPergunta}
+          placeholder="Digite o texto da pergunta" />
+        <Text style={styles.label}>Setor:</Text>
+        <Picker
+          selectedValue={idSetor}
+          onValueChange={(itemValue) => setIdSetor(itemValue)}
+        >
+          <Picker.Item label="Selecione um setor..." value="" />
+          {setores.map(setor => (
+            <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor} />
+          ))}
+        </Picker>
+
+        <Button title="Cadastrar Pergunta" onPress={handleCadastroPergunta} />
+      </View></>
   );
 };
 
@@ -84,6 +96,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
+  backButton: {
+    padding: 5,
+},
+header: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  paddingHorizontal: 10,
+  paddingTop: 10,
+  width: '100%', // Defina a largura total do cabeçalho
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+},
+headerText: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginLeft: 10,
+},
 });
 
 export default CadPergunta;

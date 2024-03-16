@@ -40,38 +40,46 @@ const Cadastro = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.imageContainer, {opacity: 0.3}]}>
-        {/* Conteúdo do Cadastro aqui */}
-        <View style={styles.contentUsers}>
+<View style={styles.container}>
+<ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.backgroundContainer, {opacity: 0.2}]}>      </ImageBackground>
+  <View style={styles.imageContainer}>
+        <View style={styles.content}>
           <View style={styles.buttonContainer}>
-            <IconButton
-              icon="account-plus"
-              size={50}
-              onPress={handleButton1Press}
-              style={styles.button}
-            />
-            <IconButton
-              icon="store"
-              size={50}
-              onPress={handleButton2Press}
-              style={styles.button}
-            />
-            <IconButton
-              icon="format-list-bulleted"
-              size={50}
-              onPress={handleButton3Press}
-              style={styles.button}
-            />
-            <IconButton
-              icon="plus-circle"
-              size={50}
-              onPress={handleButton4Press}
-              style={styles.button}
-            />
+            <View style={styles.row}>
+              <IconButton
+                icon="account-plus"
+                size={50}
+                onPress={handleButton1Press}
+                style={[styles.button, styles.icon]}
+              />
+            </View>
+            <View style={styles.row}>
+              <IconButton
+                icon="store"
+                size={50}
+                onPress={handleButton2Press}
+                style={[styles.button, styles.icon]}
+              />
+            </View>
+            <View style={styles.row}>
+              <IconButton
+                icon="format-list-bulleted"
+                size={50}
+                onPress={handleButton3Press}
+                style={[styles.button, styles.icon]}
+              />
+            </View>
+            <View style={styles.row}>
+              <IconButton
+                icon="plus-circle"
+                size={50}
+                onPress={handleButton4Press}
+                style={[styles.button, styles.icon]}
+              />
+            </View>
           </View>
         </View>
-      </ImageBackground>
+      </View>
     </View>
   );
 };
@@ -134,10 +142,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   imageContainer: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela
     height: '100%', // Ajusta a altura para ocupar toda a altura da tela
+  },
+  backgroundContainer: {
+    width: '100%', // Ajusta a largura para ocupar toda a largura da tela
+    height: '100%', // Ajusta a altura para ocupar toda a altura da tela
+    position: 'absolute', // Define a posição absoluta
+    
   },
   contentUsers: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela
@@ -149,13 +165,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20, // Adiciona espaço nas laterais
-    paddingBottom: 20, // Adiciona espaço na parte inferior
-  },
+    flexDirection: 'column', // Alterado para column para os botões ficarem em colunas
+    justifyContent: 'center', // Centraliza os botões verticalmente
+    alignItems: 'center', // Centraliza os botões horizontalmente
+    paddingHorizontal: 5,
+    paddingBottom: 150,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '50%', // Ajusta a altura para metade da tela
+  },  
   button: {
-    borderRadius: 25, // Para tornar o botão redondo
+    borderRadius: 10,
+    marginHorizontal: 5,
+    padding: 5,
+    width: 440, // Defina a largura do botão para 120
+    height: 50, // Defina a altura do botão para 120
+    justifyContent: 'center', // Centralize o conteúdo verticalmente
+    alignItems: 'center', // Centralize o conteúdo horizontalmente
+    backgroundColor: '#05d3f8',
+    // backgroundColor: '#829b86',
   },
+  icon: {
+    marginTop: 10, // Ajuste a margem superior para alinhar o ícone
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 5,
+    paddingBottom: 5,
+  },  
 });
