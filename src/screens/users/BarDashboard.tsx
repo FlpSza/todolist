@@ -16,7 +16,7 @@ const BarDashboard = ({ navigation }) => {
   const handleOptionSelect = (option) => {
       if (option === 'checklist') {
           // Navegar para a tela de checklist
-          navigation.navigate('Bar.tsx');
+          navigation.navigate('Bar');
           console.log('Checklist')
       } else if (option === 'logout') {
           // Limpar o token de autenticação e redirecionar para a tela de login

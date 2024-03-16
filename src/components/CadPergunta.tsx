@@ -4,16 +4,17 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
-
+import { response } from 'express';
 
 const CadPergunta = () => {
   const navigation = useNavigation();
   const [textoPergunta, setTextoPergunta] = useState('');
   const [idSetor, setIdSetor] = useState('');
+  const [tipoPergunta, setTipoPergunta] = useState('Abertura'); // Estado para o tipo de pergunta: Abertura ou Fechamento
   const [setores, setSetores] = useState([]);
 
   useEffect(() => {
-    // Aqui você pode fazer uma requisição para obter a lista de setores do backend
+    // Obtenha a lista de setores do backend
     axios.get('http://localhost:3000/sectorlist')
       .then(response => {
         setSetores(response.data);
@@ -24,21 +25,24 @@ const CadPergunta = () => {
   }, []);
 
   const handleCadastroPergunta = () => {
-    // Aqui você pode implementar a lógica para enviar os dados para o backend e cadastrar a pergunta
+    // Envie os dados da pergunta para o backend
     const novaPergunta = {
       textoPergunta,
-      idSetor
+      idSetor,
+      tipoPergunta
     };
 
     axios.post('http://localhost:3000/perguntas', novaPergunta)
       .then(response => {
         console.log('Pergunta cadastrada com sucesso:', response.data);
-        // Limpa os campos após o cadastro
+        // Limpe os campos após o cadastro
         setTextoPergunta('');
         setIdSetor('');
+        setTipoPergunta('Abertura'); // Reinicia para o valor padrão
       })
       .catch(error => {
         console.error('Erro ao cadastrar pergunta:', error);
+        console.log()
       });
   };
 
@@ -68,6 +72,14 @@ const CadPergunta = () => {
           {setores.map(setor => (
             <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor} />
           ))}
+        </Picker>
+        <Text style={styles.label}>Tipo de Pergunta:</Text>
+        <Picker
+          selectedValue={tipoPergunta}
+          onValueChange={(itemValue) => setTipoPergunta(itemValue)}
+        >
+          <Picker.Item label="Abertura" value="Abertura" />
+          <Picker.Item label="Fechamento" value="Fechamento" />
         </Picker>
 
         <Button title="Cadastrar Pergunta" onPress={handleCadastroPergunta} />

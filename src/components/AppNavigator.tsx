@@ -16,6 +16,11 @@ import CozinhaDashboard from '../screens/users/CozinhaDashboard'
 import SalaoDashboard from '../screens/users/SalaoDashboard'
 import ProducaoDashboard from '../screens/users/ProducaoDashboard'
 import Asg from '../screens/checklist/Asg'
+import Bar from '../screens/checklist/Bar';
+import Caixa from '../screens/checklist/Caixa';
+import Cozinha from '../screens/checklist/Cozinha';
+import Producao from '../screens/checklist/Producao';
+import Salao from '../screens/checklist/Salao';
 
 
 // Crie o navegador raiz
@@ -43,6 +48,11 @@ function AppNavigator() {
         <Stack.Screen name="CadSector" component={CadSector}/>
         <Stack.Screen name= "CadPergunta" component={CadPergunta}/>
         <Stack.Screen name= "Asg" component={Asg}/>
+        <Stack.Screen name= "Bar" component={Bar}/>
+        <Stack.Screen name= "Caixa" component={Caixa}/>
+        <Stack.Screen name= "Cozinha" component={Cozinha}/>
+        <Stack.Screen name= "Producao" component={Producao}/>
+        <Stack.Screen name= "Salao" component={Salao}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

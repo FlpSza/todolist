@@ -3,9 +3,6 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { PDFDocument, rgb } from 'react-native-pdf-lib';
-import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
-import { useNavigation } from '@react-navigation/native';
-
 
 const ChecklistItem = ({ item, onToggle }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -42,35 +39,31 @@ const ChecklistItem = ({ item, onToggle }) => {
   );
 };
 
-const Asg = () => {
+const Producao = () => {
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
   const [observation, setObservation] = useState('');
   const [showObservation, setShowObservation] = useState(false);
-  const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
       try {
-        const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; // Determina o tipo de pergunta
-        const response = await axios.get(`http://localhost:3000/perguntas/4?type=${tipoPergunta}`);
-  
+        const response = await axios.get('http://localhost:3000/perguntas/6');
+
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
-          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor ASG:`, response.data);
+          console.error('Resposta inválida ao buscar perguntas do setor ASG:', response.data);
         }
       } catch (error) {
-        console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
+        console.error('Erro ao buscar perguntas do setor ASG:', error);
       }
     };
-  
+
     fetchASGQuestions();
-  }, [isAbertura]); // Execute sempre que o estado isAbertura mudar
-  
-  
+  }, []);
 
   const initializeResponses = (questions) => {
     const initialResponses = {};
@@ -89,51 +82,89 @@ const Asg = () => {
   };
 
   const generateReportPDF = async () => {
-    // Lógica para gerar o relatório PDF
-    // ...
+    const username = 'Nome do usuário'; // Substitua pelo nome do usuário logado
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const observations = observation;
+
+    const pdfDoc = await PDFDocument.create();
+
+    const page = pdfDoc.addPage();
+    const { width, height } = page.getSize();
+    const fontSize = 20;
+    const lineHeight = 30;
+    let currentY = height - lineHeight;
+
+    page.drawText(`Usuário: ${username}`, {
+      x: 50,
+      y: currentY,
+      size: fontSize,
+    });
+    currentY -= lineHeight;
+    page.drawText(`Data: ${currentDate}`, {
+      x: 50,
+      y: currentY,
+      size: fontSize,
+    });
+    currentY -= lineHeight;
+    page.drawText(`Hora: ${currentTime}`, {
+      x: 50,
+      y: currentY,
+      size: fontSize,
+    });
+
+    Object.entries(responses).forEach(([question, answer]) => {
+      currentY -= lineHeight;
+      page.drawText(`${question}: ${answer}`, {
+        x: 50,
+        y: currentY,
+        size: fontSize,
+      });
+    });
+
+    if (observations) {
+      currentY -= lineHeight;
+      page.drawText(`Observações: ${observations}`, {
+        x: 50,
+        y: currentY,
+        size: fontSize,
+      });
+    }
+
+    const pdfBytes = await pdfDoc.save();
+
+    // Aqui você pode implementar a lógica para salvar o PDF
+    // Exemplo:
+    // await savePDF(pdfBytes);
+
+    Alert.alert('Relatório gerado com sucesso!', 'O relatório foi gerado com sucesso.');
   };
 
-  const navigation = useNavigation();
-
   return (
-    <>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="blue" />
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {checklistItems.map((item, index) => (
+          <ChecklistItem key={index} item={item} onToggle={handleToggle} />
+        ))}
+        {showObservation && (
+          <TextInput
+            style={styles.observationInput}
+            value={observation}
+            onChangeText={setObservation}
+            placeholder="Digite sua observação..."
+            multiline
+          />
+        )}
+      </ScrollView>
+      <View style={styles.bottomButtons}>
+        <TouchableOpacity onPress={handleObservationToggle}>
+          <Text style={styles.buttonText}>Observação</Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>CHECKLIST ASG</Text>
+        <TouchableOpacity onPress={generateReportPDF}>
+          <Text style={styles.buttonText}>Gerar Relatório</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          {checklistItems.map((item, index) => (
-            <ChecklistItem key={index} item={item} onToggle={handleToggle} />
-          ))}
-          {showObservation && (
-            <TextInput
-              style={styles.observationInput}
-              value={observation}
-              onChangeText={setObservation}
-              placeholder="Digite sua observação..."
-              multiline
-            />
-          )}
-        </ScrollView>
-        <View style={styles.bottomButtons}>
-          <TouchableOpacity onPress={() => setIsAbertura(true)}>
-            <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsAbertura(false)}>
-            <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleObservationToggle}>
-            <Text style={styles.buttonText}>Observação</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={generateReportPDF}>
-            <Text style={styles.buttonText}>Gerar Relatório</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </>
+    </View>
   );
 };
 
@@ -188,28 +219,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'blue',
   },
-  activeButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'green', // Cor diferente para a aba ativa
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    width: '100%', // Defina a largura total do cabeçalho
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  backButton: {
-    padding: 5,
-  },
 });
 
-export default Asg;
+export default Producao;

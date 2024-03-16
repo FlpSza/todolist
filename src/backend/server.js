@@ -345,38 +345,45 @@ app.get('/perguntas', async (req, res) => {
 
   
   
-// Endpoint para buscar todas as perguntas de um setor específico
+// Endpoint para buscar todas as perguntas de um setor específico e tipo específico (Abertura ou Fechamento)
 app.get('/perguntas/:idSetor', async (req, res) => {
     const { idSetor } = req.params;
+    const { type } = req.query; // Adicionando um novo parâmetro de consulta para o tipo de pergunta
+
+    let query = 'SELECT * FROM perguntas WHERE idSetor = ?';
+    const queryParams = [idSetor];
+
+    // Se um tipo foi especificado, inclua-o na consulta
+    if (type) {
+        query += ' AND tipoPergunta = ?';
+        queryParams.push(type);
+    }
+
     try {
-        pool.query('SELECT * FROM perguntas WHERE idSetor = ?', [idSetor], (error, results) => {
+        pool.query(query, queryParams, (error, results) => {
             if (error) {
-                console.error(`Erro ao buscar perguntas do setor ${idSetor}:`, error);
-                res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor}` });
+                console.error(`Erro ao buscar perguntas do setor ${idSetor} e tipo ${type}:`, error);
+                res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor} e tipo ${type}` });
                 return;
             }
             res.json(results); // Enviar os resultados como resposta
         });
     } catch (error) {
-        console.error(`Erro ao buscar perguntas do setor ${idSetor}:`, error);
-        res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor}` });
+        console.error(`Erro ao buscar perguntas do setor ${idSetor} e tipo ${type}:`, error);
+        res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor} e tipo ${type}` });
     }
 });
 
 
+
   
-
-//endpoint para ver as perguntas do setor
-app.get('/perguntas/:id', async (req, res) => {
-
-});
 
 // Endpoint para cadastrar uma nova pergunta
 app.post('/perguntas', (req, res) => {
-    const { textoPergunta, idSetor } = req.body;
+    const { textoPergunta, idSetor, tipoPergunta } = req.body;
   
-    if (!textoPergunta || !idSetor) {
-      return res.status(400).json({ error: 'Texto da pergunta e ID do setor são obrigatórios.' });
+    if (!textoPergunta || !idSetor || !tipoPergunta) {
+      return res.status(400).json({ error: 'Texto da pergunta, ID do setor e tipo de pergunta são obrigatórios.' });
     }
   
     // Verifica se o ID do setor fornecido é válido
@@ -394,7 +401,7 @@ app.post('/perguntas', (req, res) => {
     }
   
     // Realiza a consulta SQL para inserir a nova pergunta no banco de dados
-    pool.query('INSERT INTO perguntas (textoPergunta, idSetor) VALUES (?, ?)', [textoPergunta, idSetor], (error, results, fields) => {
+    pool.query('INSERT INTO perguntas (textoPergunta, idSetor, tipoPergunta) VALUES (?, ?, ?)', [textoPergunta, idSetor, tipoPergunta], (error, results, fields) => {
       if (error) {
         console.error('Erro ao cadastrar pergunta:', error);
         return res.status(500).json({ error: 'Erro interno do servidor.' });

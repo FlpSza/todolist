@@ -16,7 +16,7 @@ const CozinhaDashboard = ({ navigation }) => {
   const handleOptionSelect = (option) => {
       if (option === 'checklist') {
           // Navegar para a tela de checklist
-          navigation.navigate('Cozinha.tsx');
+          navigation.navigate('Cozinha');
           console.log('Checklist')
       } else if (option === 'logout') {
           // Limpar o token de autenticação e redirecionar para a tela de login
