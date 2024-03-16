@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 
 const ChecklistItem = ({ item, onToggle }) => {
@@ -39,24 +40,25 @@ const ChecklistItem = ({ item, onToggle }) => {
 
 const Asg = () => {
   const [checklistItems, setChecklistItems] = useState([]);
+  const [observation, setObservation] = useState('');
+  const [showObservation, setShowObservation] = useState(false);
 
   useEffect(() => {
-    const fetchASGQuestions = () => {
-      axios.get('http://localhost:3000/perguntas/4') // Alterado para buscar perguntas do setor ASG (idSetor = 4)
-        .then(response => {
+    const fetchASGQuestions = async () => {
+        try {
+          const response = await axios.get('http://localhost:3000/perguntas/4');
+      
           if (response.data && Array.isArray(response.data)) {
-            const questions = response.data.map(item => item.textoPergunta);
+            const questions = response.data.map((item) => item.textoPergunta);
             setChecklistItems(questions);
           } else {
             console.error('Resposta inválida ao buscar perguntas do setor ASG:', response.data);
-            // Tratar a resposta inválida conforme necessário
           }
-        })
-        .catch(error => {
+        } catch (error) {
           console.error('Erro ao buscar perguntas do setor ASG:', error);
-        });
-    };
-
+        }
+      };
+      
     fetchASGQuestions();
   }, []);
 
@@ -64,11 +66,38 @@ const Asg = () => {
     console.log(`Pergunta: ${item}, Opção selecionada: ${option}`);
   };
 
+  const handleObservationToggle = () => {
+    setShowObservation(!showObservation);
+  };
+
+  const handleGenerateReport = () => {
+    // Lógica para gerar o relatório
+  };
+
   return (
     <View style={styles.container}>
-      {checklistItems.map((item, index) => (
-        <ChecklistItem key={index} item={item} onToggle={handleToggle} />
-      ))}
+      <ScrollView style={styles.scrollView}>
+        {checklistItems.map((item, index) => (
+          <ChecklistItem key={index} item={item} onToggle={handleToggle} />
+        ))}
+        {showObservation && (
+          <TextInput
+            style={styles.observationInput}
+            value={observation}
+            onChangeText={setObservation}
+            placeholder="Digite sua observação..."
+            multiline
+          />
+        )}
+      </ScrollView>
+      <View style={styles.bottomButtons}>
+        <TouchableOpacity onPress={handleObservationToggle}>
+          <Text style={styles.buttonText}>Observação</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleGenerateReport}>
+          <Text style={styles.buttonText}>Gerar Relatório</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -77,6 +106,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    justifyContent: 'space-between',
+  },
+  scrollView: {
+    flex: 1,
   },
   item: {
     flexDirection: 'row',
@@ -102,6 +135,23 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     backgroundColor: '#ccc',
+  },
+  observationInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'blue',
   },
 });
 
