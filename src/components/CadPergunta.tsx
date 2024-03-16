@@ -67,16 +67,18 @@ const CadPergunta = () => {
         <Picker
           selectedValue={idSetor}
           onValueChange={(itemValue) => setIdSetor(itemValue)}
+          style={styles.input}
         >
           <Picker.Item label="Selecione um setor..." value="" />
           {setores.map(setor => (
-            <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor} />
+            <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor}/>
           ))}
         </Picker>
         <Text style={styles.label}>Tipo de Pergunta:</Text>
         <Picker
           selectedValue={tipoPergunta}
           onValueChange={(itemValue) => setTipoPergunta(itemValue)}
+          style={styles.input}
         >
           <Picker.Item label="Abertura" value="Abertura" />
           <Picker.Item label="Fechamento" value="Fechamento" />

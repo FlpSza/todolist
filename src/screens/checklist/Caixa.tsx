@@ -101,7 +101,7 @@ const Caixa = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="blue" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>CHECKLIST ASG</Text>
+        <Text style={styles.headerText}>CHECKLIST CAIXA</Text>
       </View>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
