@@ -15,6 +15,7 @@ import CaixaDashboard from '../screens/users/CaixaDashboard'
 import CozinhaDashboard from '../screens/users/CozinhaDashboard'
 import SalaoDashboard from '../screens/users/SalaoDashboard'
 import ProducaoDashboard from '../screens/users/ProducaoDashboard'
+import Asg from '../screens/checklist/Asg'
 
 
 // Crie o navegador raiz
@@ -41,6 +42,7 @@ function AppNavigator() {
         <Stack.Screen name="CadStore" component={CadStore}/>
         <Stack.Screen name="CadSector" component={CadSector}/>
         <Stack.Screen name= "CadPergunta" component={CadPergunta}/>
+        <Stack.Screen name= "Asg" component={Asg}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -330,6 +330,79 @@ app.post('/setores', async (req, res) => {
 // Tabela respostas: Armazena as respostas dos usuários às perguntas do checklist. Cada resposta está associada a uma pergunta específica, a um usuário e contém o texto da resposta.
 
 
+
+
+// Endpoint para buscar todas as perguntas
+app.get('/perguntas', async (req, res) => {
+    try {
+        const perguntas =  pool.query('SELECT * FROM perguntas');
+        res.json(perguntas);
+    } catch (error) {
+        console.error('Erro ao buscar perguntas:', error);
+        res.status(500).json({ error: 'Erro ao buscar perguntas' });
+    }
+});
+
+  
+  
+// Endpoint para buscar todas as perguntas de um setor específico
+app.get('/perguntas/:idSetor', async (req, res) => {
+    const { idSetor } = req.params;
+    try {
+        pool.query('SELECT * FROM perguntas WHERE idSetor = ?', [idSetor], (error, results) => {
+            if (error) {
+                console.error(`Erro ao buscar perguntas do setor ${idSetor}:`, error);
+                res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor}` });
+                return;
+            }
+            res.json(results); // Enviar os resultados como resposta
+        });
+    } catch (error) {
+        console.error(`Erro ao buscar perguntas do setor ${idSetor}:`, error);
+        res.status(500).json({ error: `Erro ao buscar perguntas do setor ${idSetor}` });
+    }
+});
+
+
+  
+
+//endpoint para ver as perguntas do setor
+app.get('/perguntas/:id', async (req, res) => {
+
+});
+
+// Endpoint para cadastrar uma nova pergunta
+app.post('/perguntas', (req, res) => {
+    const { textoPergunta, idSetor } = req.body;
+  
+    if (!textoPergunta || !idSetor) {
+      return res.status(400).json({ error: 'Texto da pergunta e ID do setor são obrigatórios.' });
+    }
+  
+    // Verifica se o ID do setor fornecido é válido
+    const setores = {
+      1: 'salao',
+      2: 'bar',
+      3: 'caixa',
+      4: 'ASG',
+      5: 'cozinha',
+      6: 'producao',
+      7: 'administrador'
+    };
+    if (!setores[idSetor]) {
+      return res.status(400).json({ error: 'ID do setor inválido.' });
+    }
+  
+    // Realiza a consulta SQL para inserir a nova pergunta no banco de dados
+    pool.query('INSERT INTO perguntas (textoPergunta, idSetor) VALUES (?, ?)', [textoPergunta, idSetor], (error, results, fields) => {
+      if (error) {
+        console.error('Erro ao cadastrar pergunta:', error);
+        return res.status(500).json({ error: 'Erro interno do servidor.' });
+      }
+      res.status(201).json({ message: 'Pergunta cadastrada com sucesso.' });
+    });
+  });
+
 // Iniciar o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

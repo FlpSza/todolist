@@ -14,7 +14,6 @@ const CadPergunta = () => {
 
   useEffect(() => {
     // Aqui você pode fazer uma requisição para obter a lista de setores do backend
-    // Exemplo:
     axios.get('http://localhost:3000/sectorlist')
       .then(response => {
         setSetores(response.data);
@@ -27,7 +26,6 @@ const CadPergunta = () => {
   const handleCadastroPergunta = () => {
     // Aqui você pode implementar a lógica para enviar os dados para o backend e cadastrar a pergunta
     const novaPergunta = {
-      idQuestionario: 1, // Defina o ID do questionário conforme necessário
       textoPergunta,
       idSetor
     };
