@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Print from 'expo-print';
 import axios from 'axios';
-import { PDFDocument, rgb } from 'react-native-pdf-lib';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
 
@@ -48,6 +47,51 @@ const Asg = () => {
   const [observation, setObservation] = useState('');
   const [showObservation, setShowObservation] = useState(false);
   const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
+
+    // Função para gerar o PDF
+    const generatePDF = async () => {
+      const htmlContent = `
+        <html>
+          <head>
+            <title>Relatório de Checklist</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              h1 {
+                color: blue;
+              }
+              .response {
+                margin-bottom: 10px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Relatório de Checklist ASG</h1>
+            <h2>${isAbertura ? 'Abertura' : 'Fechamento'}</h2>
+            <div class="responses">
+              ${checklistItems
+                .map(
+                  (item, index) => `
+                <div class="response">
+                  <p>${index + 1}. ${item}: ${responses[item] || ''}</p>
+                </div>
+              `
+                )
+                .join('')}
+            </div>
+            ${showObservation && `<p>Observação: ${observation}</p>`}
+          </body>
+        </html>
+      `;
+  
+      try {
+        const { uri } = await Print.printToFileAsync({ html: htmlContent });
+        console.log('PDF gerado com sucesso:', uri);
+      } catch (error) {
+        console.error('Erro ao gerar o PDF:', error);
+      }
+    };
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
@@ -128,7 +172,7 @@ const Asg = () => {
           <TouchableOpacity onPress={handleObservationToggle}>
             <Text style={styles.buttonText}>Observação</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={generateReportPDF}>
+          <TouchableOpacity onPress={generatePDF}>
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>
