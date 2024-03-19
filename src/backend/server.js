@@ -75,25 +75,15 @@ app.post('/login', (req, res) => {
         };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
 
-        // Verificar o setor do usuário e enviar o redirecionamento
-        if (user.idSetor === 7) {
-            return res.status(200).send({ redirectTo: '/admin-dashboard', token });
-        } else if (user.idSetor === 1) {
-            return res.status(200).send({ redirectTo: '/salao-dashboard', token });
-        } else if (user.idSetor === 2) {
-            return res.status(200).send({ redirectTo: '/bar-dashboard', token });
-        } else if (user.idSetor === 3) {
-            return res.status(200).send({ redirectTo: '/caixa-dashboard', token });
-        } else if (user.idSetor === 4) {
-            return res.status(200).send({ redirectTo: '/asg-dashboard', token });
-        } else if (user.idSetor === 5) {
-            return res.status(200).send({ redirectTo: '/coz-dashboard', token });
-        } else if (user.idSetor === 6) {
-            return res.status(200).send({ redirectTo: '/prod-dashboard', token });
-        } else {
-            console.error('Setor de usuário desconhecido:', user.idSetor);
-            return res.status(500).send('Erro interno do servidor');
-        }
+        // Enviar informações do usuário junto com o token
+        const userInfo = {
+            id: user.idUsuario,
+            email: user.email,
+            idSetor: user.idSetor,
+            nome: user.nome // Inclua quaisquer outras informações do usuário que você deseja enviar
+        };
+
+        return res.status(200).send({ token, userInfo });
     });
 });
 

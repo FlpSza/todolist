@@ -15,7 +15,6 @@
       "**/*"
     ],
     "ios": {
-      
       "supportsTablet": true,
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -31,6 +30,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

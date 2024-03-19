@@ -87,7 +87,7 @@ export default function Login() {
       <KeyboardAvoidingView style={styles.background}>
         <View style={styles.containerLogo}>
           <Image
-            source={require('../../../assets/logo.png')}
+            source={require('../../../assets/logoRd.png')}
           />
         </View>
 
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnSubmit: {
-    backgroundColor: '#35AAFF',
+    backgroundColor: '#002385',
     width: '90%',
     height: 45,
     alignItems: 'center',

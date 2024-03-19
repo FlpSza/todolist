@@ -4,7 +4,8 @@ import * as Print from 'expo-print';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
-
+import * as pdfMake from "pdfmake/build/pdfmake";
+import { useFonts } from 'expo-font';
 
 const ChecklistItem = ({ item, onToggle }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -42,63 +43,21 @@ const ChecklistItem = ({ item, onToggle }) => {
 };
 
 const Asg = () => {
+  const [userInfo, setUserInfo] = useState(null);
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
   const [observation, setObservation] = useState('');
   const [showObservation, setShowObservation] = useState(false);
   const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
 
-    // Função para gerar o PDF
-    const generatePDF = async () => {
-      const htmlContent = `
-        <html>
-          <head>
-            <title>Relatório de Checklist</title>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-              }
-              h1 {
-                color: blue;
-              }
-              .response {
-                margin-bottom: 10px;
-              }
-            </style>
-          </head>
-          <body>
-            <h1>Relatório de Checklist ASG</h1>
-            <h2>${isAbertura ? 'Abertura' : 'Fechamento'}</h2>
-            <div class="responses">
-              ${checklistItems
-                .map(
-                  (item, index) => `
-                <div class="response">
-                  <p>${index + 1}. ${item}: ${responses[item] || ''}</p>
-                </div>
-              `
-                )
-                .join('')}
-            </div>
-            ${showObservation && `<p>Observação: ${observation}</p>`}
-          </body>
-        </html>
-      `;
-  
-      try {
-        const { uri } = await Print.printToFileAsync({ html: htmlContent });
-        console.log('PDF gerado com sucesso:', uri);
-      } catch (error) {
-        console.error('Erro ao gerar o PDF:', error);
-      }
-    };
+
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
       try {
-        const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; // Determina o tipo de pergunta
+        const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; 
         const response = await axios.get(`http://localhost:3000/perguntas/4?type=${tipoPergunta}`);
-  
+
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);
           setChecklistItems(questions);
@@ -110,9 +69,9 @@ const Asg = () => {
         console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
       }
     };
-  
+
     fetchASGQuestions();
-  }, [isAbertura]); // Execute sempre que o estado isAbertura mudar
+  }, [isAbertura]);
   
   
 
@@ -133,9 +92,28 @@ const Asg = () => {
   };
 
   const generateReportPDF = async () => {
-    // Lógica para gerar o relatório PDF
-    // ...
-  };
+    try {  
+      const reportTitle = [];
+     
+      const details = []; 
+  
+      const rodape = [];
+  
+      const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [15, 50, 15, 40],
+        header: [reportTitle],
+        content: [details],
+        footer: [rodape],
+      };
+  
+    // Criando o PDF com as fontes embutidas
+    pdfMake.createPdf(docDefinition).open();
+    console.log('Gerando relatorio')
+  } catch (error) {
+    console.error('Erro ao gerar o PDF:', error);
+  }
+};
 
   const navigation = useNavigation();
 
@@ -172,7 +150,7 @@ const Asg = () => {
           <TouchableOpacity onPress={handleObservationToggle}>
             <Text style={styles.buttonText}>Observação</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={generatePDF}>
+          <TouchableOpacity onPress={generateReportPDF}>
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>

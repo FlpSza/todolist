@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     height: 50, // Defina a altura do botão para 120
     justifyContent: 'center', // Centralize o conteúdo verticalmente
     alignItems: 'center', // Centralize o conteúdo horizontalmente
-    backgroundColor: '#05d3f8',
+    backgroundColor: '#002385',
     // backgroundColor: '#829b86',
   },
   icon: {
