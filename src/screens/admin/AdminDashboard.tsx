@@ -40,46 +40,47 @@ const Cadastro = () => {
   };
 
   return (
-<View style={styles.container}>
-<ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.backgroundContainer, {opacity: 0.2}]}>      </ImageBackground>
-  <View style={styles.imageContainer}>
-        <View style={styles.content}>
-          <View style={styles.buttonContainer}>
-            <View style={styles.row}>
-              <IconButton
-                icon="account-plus"
-                size={50}
-                onPress={handleButton1Press}
-                style={[styles.button, styles.icon]}
-              />
-            </View>
-            <View style={styles.row}>
-              <IconButton
-                icon="store"
-                size={50}
-                onPress={handleButton2Press}
-                style={[styles.button, styles.icon]}
-              />
-            </View>
-            <View style={styles.row}>
-              <IconButton
-                icon="format-list-bulleted"
-                size={50}
-                onPress={handleButton3Press}
-                style={[styles.button, styles.icon]}
-              />
-            </View>
-            <View style={styles.row}>
-              <IconButton
-                icon="plus-circle"
-                size={50}
-                onPress={handleButton4Press}
-                style={[styles.button, styles.icon]}
-              />
+    <View style={styles.container}>
+      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.backgroundContainer, {opacity: 0.2}]}>      
+        <View style={styles.imageContainer}>
+          <View style={styles.content}>
+            <View style={styles.buttonContainer}>
+              <View style={styles.row}>
+                <IconButton
+                  icon="account-plus"
+                  size={50}
+                  onPress={handleButton1Press}
+                  style={[styles.button, styles.icon]}
+                />
+              </View>
+              <View style={styles.row}>
+                <IconButton
+                  icon="store"
+                  size={50}
+                  onPress={handleButton2Press}
+                  style={[styles.button, styles.icon]}
+                />
+              </View>
+              <View style={styles.row}>
+                <IconButton
+                  icon="format-list-bulleted"
+                  size={50}
+                  onPress={handleButton3Press}
+                  style={[styles.button, styles.icon]}
+                />
+              </View>
+              <View style={styles.row}>
+                <IconButton
+                  icon="plus-circle"
+                  size={50}
+                  onPress={handleButton4Press}
+                  style={[styles.button, styles.icon]}
+                />
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };

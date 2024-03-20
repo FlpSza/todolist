@@ -27,7 +27,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log(email, password)
     try {
-      const response = await axios.post('http://localhost:3000/login', {
+      const response = await axios.post('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/login', {
         email,
         senha: password // Envie a senha como 'senha'
       });
@@ -40,7 +40,7 @@ export default function Login() {
       await AsyncStorage.setItem('token', response.data.token);
 
       // Obter informações adicionais do usuário usando o token
-      const userResponse = await axios.get('http://localhost:3000/user-info', {
+      const userResponse = await axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/user-info', {
         headers: {
           Authorization: `Bearer ${response.data.token}`
         }
@@ -137,13 +137,14 @@ const styles = StyleSheet.create({
   containerLogo: {
     flex: 1,
     justifyContent: 'center',
+    paddingTop: 20
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-    paddingBottom: 200
+    paddingBottom: 190
   },
   input: {
     backgroundColor: '#fff',

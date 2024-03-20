@@ -15,7 +15,7 @@ const CadPergunta = () => {
 
   useEffect(() => {
     // Obtenha a lista de setores do backend
-    axios.get('http://localhost:3000/sectorlist')
+    axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/sectorlist')
       .then(response => {
         setSetores(response.data);
       })
@@ -32,7 +32,7 @@ const CadPergunta = () => {
       tipoPergunta
     };
 
-    axios.post('http://localhost:3000/perguntas', novaPergunta)
+    axios.post('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/perguntas', novaPergunta)
       .then(response => {
         console.log('Pergunta cadastrada com sucesso:', response.data);
         // Limpe os campos após o cadastro

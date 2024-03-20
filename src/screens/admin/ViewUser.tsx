@@ -13,7 +13,7 @@ export default function ViewUser() {
         // Função para buscar a lista de usuários do backend
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/userlist');
+                const response = await axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/userlist');
                 setUsers(response.data); // Define os usuários obtidos na resposta
             } catch (error) {
                 console.error('Erro ao buscar lista de usuários:', error);
@@ -28,7 +28,7 @@ export default function ViewUser() {
     const handleDeleteUser = async (userName) => {
         try {
             // Endpoint para excluir o usuário
-            await axios.delete(`http://localhost:3000/users/${userName}`);
+            await axios.delete(`https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/users/${userName}`);
             // Atualiza a lista de usuários após a exclusão
             setUsers(prevUsers => prevUsers.filter(user => user.nome !== userName));
         } catch (error) {

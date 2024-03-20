@@ -11,7 +11,7 @@ export default function ViewStore() {
 
     const fetchStores = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/storelist');
+            const response = await axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/storelist');
             setStores(response.data);
         } catch (error) {
             console.error('Erro ao buscar lista de lojas:', error);
@@ -28,7 +28,7 @@ export default function ViewStore() {
 
     const handleDeleteStore = async (storeId) => {
         try {
-            await axios.delete(`http://localhost:3000/store/${storeId}`);
+            await axios.delete(`https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/store/${storeId}`);
             setStores(stores.filter(store => store.idLoja !== storeId));
         } catch (error) {
             console.error('Erro ao excluir loja:', error);

@@ -19,7 +19,7 @@ const CadUser = () => {
     useEffect(() => {
         const fetchSetores = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/sectorlist');
+                const response = await axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/sectorlist');
                 setSetores(response.data);
             } catch (error) {
                 console.error('Erro ao buscar setores:', error);
@@ -28,7 +28,7 @@ const CadUser = () => {
 
         const fetchLojas = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/storelist');
+                const response = await axios.get('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/storelist');
                 setLojas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar lojas:', error);
@@ -41,7 +41,7 @@ const CadUser = () => {
 
     const handleAddUser = async () => {
         try {
-            const response = await axios.post('http://localhost:3000/users', {
+            const response = await axios.post('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/users', {
                 nome,
                 email,
                 senha,

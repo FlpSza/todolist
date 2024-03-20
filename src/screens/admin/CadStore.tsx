@@ -11,7 +11,7 @@ const CadStore = () => {
 
     const handleAddStore = async () => {
         try {
-            const response = await axios.post('http://localhost:3000/lojas', {
+            const response = await axios.post('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/lojas', {
                 nmLoja: nome,
             });
             Alert.alert('Sucesso', response.data.mensagem);

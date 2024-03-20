@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
-import { PDFDocument, rgb } from 'react-native-pdf-lib';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
 
@@ -53,7 +52,7 @@ const Bar = () => {
     const fetchASGQuestions = async () => {
       try {
         const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; // Determina o tipo de pergunta
-        const response = await axios.get(`http://localhost:3000/perguntas/2?type=${tipoPergunta}`);
+        const response = await axios.get(`https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/perguntas/2?type=${tipoPergunta}`);
   
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);
