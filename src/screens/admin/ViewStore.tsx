@@ -92,10 +92,12 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 18,
+        paddingTop: 55,
         fontWeight: 'bold',
     },
     backButton: {
         padding: 5,
+        paddingTop: 55
     },
     itemContainer: {
         flexDirection: 'row',
@@ -107,6 +109,7 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         flex: 1,
+        top: 10,
         flexDirection: 'row', // Alinha os textos horizontalmente
         alignItems: 'center', // Alinha os textos verticalmente
         width: '100%', // Ocupa 100% da largura horizontalmente
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 40,
         right: 20,
         backgroundColor: 'blue',
         borderRadius: 30,
@@ -124,8 +127,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     userInfoText: {
-        paddingRight: 20, // Distância fixa à direita de cada texto
-        width: '33.33%',
+        width: '45.33%',
     },
     flatlist: {
         width: '100%',

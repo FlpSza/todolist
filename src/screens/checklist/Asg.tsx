@@ -56,7 +56,7 @@ const Asg = () => {
     const fetchASGQuestions = async () => {
       try {
         const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; 
-        const response = await axios.get(`http://654d-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
+        const response = await axios.get(`https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
 
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);

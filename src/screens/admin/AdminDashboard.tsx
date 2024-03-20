@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, Text, Button, IconButton } from 'react-native-paper';
-import { View, ImageBackground, StyleSheet } from 'react-native';
+import { View, ImageBackground, StyleSheet, SafeAreaView, Image } from 'react-native';
 import ViewUser from './ViewUser';
 import ViewStore from './ViewStore';
 import ViewSector from './ViewSector';
@@ -87,7 +87,13 @@ const Cadastro = () => {
 
 const MyComponent = () => {
   return (
-    <Tab.Navigator>
+    <>
+        <View style={styles.userInfoContainer}>
+          <Image source={require('../../../assets/admin_user_icon_188317.png')} style={styles.userIcon} />
+          <Text style={styles.loginInfo}>Perfil Administrador</Text>
+        </View>
+      
+      <Tab.Navigator>
       <Tab.Screen
         name="Home"
         component={AdminDashboard}
@@ -95,10 +101,9 @@ const MyComponent = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name={focused ? 'home' : 'home-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Home',
+          tabBarLabel: 'Início',
           headerShown: false,
-        }}
-      />
+        }} />
       <Tab.Screen
         name="Cadastro"
         component={Cadastro}
@@ -106,10 +111,9 @@ const MyComponent = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name={focused ? 'account-plus' : 'account-plus-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Cadastro',
+          tabBarLabel: 'Cadastros',
           headerShown: false,
-        }}
-      />
+        }} />
       <Tab.Screen
         name="Setores"
         component={ViewSector} // Altere o componente para a tela ViewSector
@@ -119,8 +123,7 @@ const MyComponent = () => {
           ),
           tabBarLabel: 'Setores',
           headerShown: false,
-        }}
-      />
+        }} />
       <Tab.Screen
         name="Lojas"
         component={ViewStore} // Altere o componente para a tela ViewStore
@@ -130,9 +133,10 @@ const MyComponent = () => {
           ),
           tabBarLabel: 'Lojas',
           headerShown: false,
-        }}
-      />
-    </Tab.Navigator>
+        }} />
+        
+    </Tab.Navigator></>
+    
   );
 };
 
@@ -145,16 +149,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '100%',
+    backgroundColor: 'white'
+  },
+  loginInfo: {
+    zIndex: 5,
+    position: 'absolute',
+    top: 2,
+    left: 35,
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  userInfoContainer: {
+    zIndex: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 10,
+    left: 15,
+  },
+  userIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 5,
   },
   imageContainer: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela
     height: '100%', // Ajusta a altura para ocupar toda a altura da tela
+    backgroundColor: '#fff'
   },
   backgroundContainer: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela
     height: '100%', // Ajusta a altura para ocupar toda a altura da tela
     position: 'absolute', // Define a posição absoluta
-    
+    backgroundColor: '#fff',
   },
   contentUsers: {
     width: '100%', // Ajusta a largura para ocupar toda a largura da tela

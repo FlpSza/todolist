@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
-import { response } from 'express';
+import RNPickerSelect from 'react-native-picker-select';
 
 const CadPergunta = () => {
   const navigation = useNavigation();
@@ -37,8 +37,8 @@ const CadPergunta = () => {
         console.log('Pergunta cadastrada com sucesso:', response.data);
         // Limpe os campos após o cadastro
         setTextoPergunta('');
-        setIdSetor('');
-        setTipoPergunta('Abertura'); // Reinicia para o valor padrão
+        setIdSetor('Selecione um setor...');
+        setTipoPergunta('Selecione um tipo de pergunta...'); // Reinicia para o valor padrão
       })
       .catch(error => {
         console.error('Erro ao cadastrar pergunta:', error);
@@ -63,26 +63,24 @@ const CadPergunta = () => {
           value={textoPergunta}
           onChangeText={setTextoPergunta}
           placeholder="Digite o texto da pergunta" />
-        <Text style={styles.label}>Setor:</Text>
-        <Picker
-          selectedValue={idSetor}
-          onValueChange={(itemValue) => setIdSetor(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="Selecione um setor..." value="" />
-          {setores.map(setor => (
-            <Picker.Item key={setor.idSetor} label={setor.nmSetor} value={setor.idSetor}/>
-          ))}
-        </Picker>
-        <Text style={styles.label}>Tipo de Pergunta:</Text>
-        <Picker
-          selectedValue={tipoPergunta}
-          onValueChange={(itemValue) => setTipoPergunta(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="Abertura" value="Abertura" />
-          <Picker.Item label="Fechamento" value="Fechamento" />
-        </Picker>
+      <Text style={styles.label}>Setor:</Text>
+      <RNPickerSelect
+        style={pickerSelectStyles}
+        placeholder={{ label: 'Selecione um setor...', value: '' }}
+        onValueChange={(value) => setIdSetor(value)}
+        items={setores.map(setor => ({ label: setor.nmSetor, value: setor.idSetor }))}
+      />
+
+      <Text style={styles.label}>Tipo de Pergunta:</Text>
+      <RNPickerSelect
+        style={pickerSelectStyles}
+        placeholder={{ label: 'Selecione o tipo de pergunta...', value: '' }}
+        onValueChange={(value) => setTipoPergunta(value)}
+        items={[
+          { label: 'Abertura', value: 'Abertura' },
+          { label: 'Fechamento', value: 'Fechamento' }
+        ]}
+      />
 
         <Button title="Cadastrar Pergunta" onPress={handleCadastroPergunta} />
       </View></>
@@ -94,11 +92,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
   },
   label: {
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 15,
+    top: 10
   },
   input: {
     width: '100%',
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     padding: 5,
 },
 header: {
+  backgroundColor: '#fff',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'flex-start',
@@ -126,6 +127,30 @@ headerText: {
   fontWeight: 'bold',
   marginLeft: 10,
 },
-});
+botaoCadastro: {
 
+}
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+      fontSize: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'gray',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
 export default CadPergunta;

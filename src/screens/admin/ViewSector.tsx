@@ -61,6 +61,7 @@ export default function ViewSector() {
             </View>
             <FlatList
                 style={styles.flatlist}
+                contentContainerStyle={{ paddingTop: 25 }}
                 data={sectors}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.idSetor.toString()}
@@ -92,16 +93,19 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 18,
+        paddingTop: 55,
         fontWeight: 'bold',
     },
     backButton: {
         padding: 5,
+        paddingTop: 55
     },
     itemContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
+        top: -10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 40,
         right: 20,
         backgroundColor: 'blue',
         borderRadius: 30,
@@ -124,8 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     userInfoText: {
-        paddingRight: 20, // Distância fixa à direita de cada texto
-        width: '33.33%',
+        width: '45.33%',
     },
     flatlist: {
         width: '100%',

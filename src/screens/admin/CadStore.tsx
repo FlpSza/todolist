@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20
+        padding: 20,
+        backgroundColor:'#fff'
     },
     input: {
         width: '100%',
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
+        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-start',
         paddingHorizontal: 10,

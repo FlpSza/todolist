@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = "http://654d-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app";
+const port = "https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app";
 app.use(cors());
 
 // Middleware para parsear o corpo das requisições em JSON

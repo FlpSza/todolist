@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
+        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-start',
         paddingHorizontal: 10,
