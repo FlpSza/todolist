@@ -26,7 +26,7 @@ const ChecklistItem = ({ item, onToggle }) => {
           ]}
           onPress={() => handleOptionSelect('Sim')}
         >
-          <Text>Sim</Text>
+          <Text style={styles.optionText}>Sim</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -35,7 +35,7 @@ const ChecklistItem = ({ item, onToggle }) => {
           ]}
           onPress={() => handleOptionSelect('Não')}
         >
-          <Text>Não</Text>
+          <Text style={styles.optionText}>Não</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -56,7 +56,7 @@ const Asg = () => {
     const fetchASGQuestions = async () => {
       try {
         const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; 
-        const response = await axios.get(`https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
+        const response = await axios.get(`https://21ef-2804-d41-b066-6900-e906-e6be-d145-2d5b.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
 
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);
@@ -107,8 +107,6 @@ const Asg = () => {
         footer: [rodape],
       };
   
-    // Criando o PDF com as fontes embutidas
-    pdfMake.createPdf(docDefinition).open();
     console.log('Gerando relatorio')
   } catch (error) {
     console.error('Erro ao gerar o PDF:', error);
@@ -177,6 +175,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   text: {
+    flex: 1,
     fontSize: 18,
   },
   options: {
@@ -189,6 +188,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     marginRight: 10,
+  },
+  optionText: {
+    fontSize: 16,
   },
   selectedOption: {
     backgroundColor: '#ccc',
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: 'blue',
   },

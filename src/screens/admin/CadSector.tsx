@@ -10,7 +10,7 @@ const CadSector = () => {
 
     const handleAddSector = async () => {
         try {
-            const response = await axios.post('https://d3cc-2804-d41-b066-6900-c087-456a-2b2a-9253.ngrok-free.app/setores', {
+            const response = await axios.post('https://21ef-2804-d41-b066-6900-e906-e6be-d145-2d5b.ngrok-free.app/setores', {
                 nmSetor: nome,
             });
             Alert.alert('Sucesso', response.data.mensagem);
