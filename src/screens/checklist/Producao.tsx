@@ -52,7 +52,7 @@ const Producao = () => {
     const fetchASGQuestions = async () => {
       try {
         const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; // Determina o tipo de pergunta
-        const response = await axios.get(`https://21ef-2804-d41-b066-6900-e906-e6be-d145-2d5b.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
+        const response = await axios.get(`https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
   
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);

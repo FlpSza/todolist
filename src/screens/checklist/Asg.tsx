@@ -4,8 +4,8 @@ import * as Print from 'expo-print';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import { useFonts } from 'expo-font';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import moment from 'moment'; // Para manipulação de datas
 
 const ChecklistItem = ({ item, onToggle }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -42,21 +42,69 @@ const ChecklistItem = ({ item, onToggle }) => {
   );
 };
 
+// const Relatorio = ({ usuarioLogado, respostas }) => {
+//   const [relatorioGerado, setRelatorioGerado] = useState(null);
+
+//   const gerarRelatorioPDF = async () => {
+//     try {
+//       const today = moment().format('DD/MM/YYYY'); // Obtém a data atual formatada
+//       const htmlContent = `
+//         <h1>RELATÓRIO ABERTURA/FECHAMENTO</h1>
+//         <p><strong>Responsável:</strong> ${usuarioLogado}</p>
+//         <p><strong>Data:</strong> ${today}</p>
+//         <h2>Perguntas e Respostas</h2>
+//         ${respostas.map((pergunta, index) => `
+//           <p><strong>Pergunta ${index + 1}:</strong> ${pergunta.pergunta}</p>
+//           <p><strong>Resposta:</strong> ${pergunta.resposta}</p>
+//         `).join('')}
+//         <h2>Observações</h2>
+//         <p>Aqui você pode adicionar as observações.</p>
+//         <br/><br/><br/>
+//         <p style="text-align: right;">__________________<br/>Assinatura</p>
+//       `;
+
+//       const options = {
+//         html: htmlContent,
+//         fileName: 'relatorio.pdf',
+//         directory: 'Documents',
+//       };
+
+//       const pdf = await RNHTMLtoPDF.convert(options);
+//       setRelatorioGerado(pdf.filePath);
+//     } catch (error) {
+//       console.error('Erro ao gerar o relatório PDF:', error);
+//     }
+//   };
+
+//   return (
+//     <View>
+//       <TouchableOpacity onPress={gerarRelatorioPDF}>
+//         <Text>Gerar Relatório</Text>
+//       </TouchableOpacity>
+//       {relatorioGerado && (
+//         <TouchableOpacity onPress={() => alert(`Relatório gerado em: ${relatorioGerado}`)}>
+//           <Text>Abrir Relatório</Text>
+//         </TouchableOpacity>
+//       )}
+//     </View>
+//   );
+// };
+
 const Asg = () => {
-  const [userInfo, setUserInfo] = useState(null);
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
   const [observation, setObservation] = useState('');
   const [showObservation, setShowObservation] = useState(false);
   const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
-
+  const [exibirRelatorio, setExibirRelatorio] = useState(false);
+  const [relatorioGerado, setRelatorioGerado] = useState(null);
 
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
       try {
         const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; 
-        const response = await axios.get(`https://21ef-2804-d41-b066-6900-e906-e6be-d145-2d5b.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
+        const response = await axios.get(`https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/perguntas/4?type=${tipoPergunta}`);
 
         if (response.data && Array.isArray(response.data)) {
           const questions = response.data.map((item) => item.textoPergunta);
@@ -91,28 +139,34 @@ const Asg = () => {
     setShowObservation(!showObservation);
   };
 
-  const generateReportPDF = async () => {
-    try {  
-      const reportTitle = [];
-     
-      const details = []; 
-  
-      const rodape = [];
-  
-      const docDefinition = {
-        pageSize: 'A4',
-        pageMargins: [15, 50, 15, 40],
-        header: [reportTitle],
-        content: [details],
-        footer: [rodape],
-      };
-  
-    console.log('Gerando relatorio')
+
+const gerarRelatorioPDF = async () => {
+  try {
+    const today = moment().format('DD/MM/YYYY'); // Obtém a data atual formatada
+    const htmlContent = `
+      <h1>RELATÓRIO ABERTURA/FECHAMENTO</h1>
+      <p><strong>Responsável:</strong> TESTE</p>
+      <p><strong>Data:</strong> TESTE</p>
+      <h2>Perguntas e Respostas</h2>
+      TESTE
+      <h2>Observações</h2>
+      <p>Aqui você pode adicionar as observações.</p>
+      <br/><br/><br/>
+      <p style="text-align: right;">__________________<br/>Assinatura</p>
+    `;
+
+    const options = {
+      html: htmlContent,
+      fileName: 'relatorio.pdf',
+      directory: 'Documents',
+    };
+
+    const pdf = await RNHTMLtoPDF.convert(options);
+    setRelatorioGerado(pdf.filePath);
   } catch (error) {
-    console.error('Erro ao gerar o PDF:', error);
+    console.error('Erro ao gerar o relatório PDF:', error);
   }
 };
-
   const navigation = useNavigation();
 
   return (
@@ -148,7 +202,7 @@ const Asg = () => {
           <TouchableOpacity onPress={handleObservationToggle}>
             <Text style={styles.buttonText}>Observação</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={generateReportPDF}>
+          <TouchableOpacity onPress={gerarRelatorioPDF}>
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>
