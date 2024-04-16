@@ -41,7 +41,7 @@ const Cadastro = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.backgroundContainer, {opacity: 0.2}]}>      
+      <ImageBackground source={require('../../../assets/smallLogoBlue.png')} style={[styles.backgroundContainer,]}>      
         <View style={styles.imageContainer}>
           <View style={styles.content}>
             <View style={styles.buttonContainer}>
@@ -52,8 +52,6 @@ const Cadastro = () => {
                   onPress={handleButton1Press}
                   style={[styles.button, styles.icon]}
                 />
-              </View>
-              <View style={styles.row}>
                 <IconButton
                   icon="store"
                   size={50}
@@ -68,8 +66,6 @@ const Cadastro = () => {
                   onPress={handleButton3Press}
                   style={[styles.button, styles.icon]}
                 />
-              </View>
-              <View style={styles.row}>
                 <IconButton
                   icon="plus-circle"
                   size={50}
@@ -84,6 +80,7 @@ const Cadastro = () => {
     </View>
   );
 };
+
 
 const MyComponent = () => {
   return (
@@ -205,17 +202,16 @@ const styles = StyleSheet.create({
   },  
   button: {
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 1,
     padding: 5,
-    width: 440, // Defina a largura do botão para 120
-    height: 50, // Defina a altura do botão para 120
+    width: 130, // Defina a largura do botão para 120
+    height: 110, // Defina a altura do botão para 120
     justifyContent: 'center', // Centralize o conteúdo verticalmente
     alignItems: 'center', // Centralize o conteúdo horizontalmente
-    backgroundColor: '#002385',
-    // backgroundColor: '#829b86',
+    backgroundColor: 'black',
   },
   icon: {
-    marginTop: 10, // Ajuste a margem superior para alinhar o ícone
+    marginTop: 20, // Ajuste a margem superior para alinhar o ícone
   },
   row: {
     flexDirection: 'row',

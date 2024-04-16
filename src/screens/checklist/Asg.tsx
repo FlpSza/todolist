@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert, Image } from 'react-native';
 import * as Print from 'expo-print';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
@@ -93,8 +93,10 @@ const ChecklistItem = ({ item, onToggle }) => {
 const Asg = () => {
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
-  const [observation, setObservation] = useState('');
-  const [showObservation, setShowObservation] = useState(false);
+  const [observationAbertura, setObservationAbertura] = useState('');
+  const [observationFechamento, setObservationFechamento] = useState('');
+  const [showObservationAbertura, setShowObservationAbertura] = useState(false);
+  const [showObservationFechamento, setShowObservationFechamento] = useState(false);
   const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
   const [exibirRelatorio, setExibirRelatorio] = useState(false);
   const [relatorioGerado, setRelatorioGerado] = useState(null);
@@ -135,8 +137,12 @@ const Asg = () => {
     setResponses({ ...responses, [item]: option });
   };
 
-  const handleObservationToggle = () => {
-    setShowObservation(!showObservation);
+  const handleObservationToggleAbertura = () => {
+    setShowObservationAbertura(!showObservationAbertura);
+  };
+
+  const handleObservationToggleFechamento = () => {
+    setShowObservationFechamento(!showObservationFechamento);
   };
 
 
@@ -182,27 +188,40 @@ const gerarRelatorioPDF = async () => {
           {checklistItems.map((item, index) => (
             <ChecklistItem key={index} item={item} onToggle={handleToggle} />
           ))}
-          {showObservation && (
+          {showObservationAbertura && (
             <TextInput
               style={styles.observationInput}
-              value={observation}
-              onChangeText={setObservation}
-              placeholder="Digite sua observação..."
+              value={observationAbertura}
+              onChangeText={setObservationAbertura}
+              placeholder="Digite sua observação para abertura..."
               multiline
             />
           )}
-        </ScrollView>
+
+          </ScrollView>
         <View style={styles.bottomButtons}>
           <TouchableOpacity onPress={() => setIsAbertura(true)}>
+            <Image source={require('../../../assets/abertura.png')}
+            style={styles.imgBtn}
+            />
             <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsAbertura(false)}>
+          <Image source={require('../../../assets/fechamento.png')}
+            style={[styles.imgBtn, styles.imgBtn2]}
+            />
             <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleObservationToggle}>
-            <Text style={styles.buttonText}>Observação</Text>
+          <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
+            <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
+            <Text style={isAbertura ? styles.imgBtn : styles.imgBtn}>
+              {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={gerarRelatorioPDF}>
+          <Image source={require('../../../assets/genRelatorio.png')}
+            style={styles.imgBtn}
+            />
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>
@@ -219,6 +238,18 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  imgBtn: {
+    height: 35,
+    width: 35,
+    alignContent: "center",
+    alignSelf: "center",
+    bottom: 10
+  },
+  imgBtn2: {
+    height: 45,
+    width: 45,
+    bottom: 15
   },
   item: {
     flexDirection: 'row',
@@ -260,11 +291,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 20,
+    top: 40
   },
   buttonText: {
     fontSize: 12,
     fontWeight: 'bold',
     color: 'blue',
+    bottom: 10
   },
   activeButtonText: {
     fontSize: 16,

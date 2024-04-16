@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import RNPickerSelect from 'react-native-picker-select';
@@ -90,7 +90,12 @@ const CadUser = () => {
                         placeholder={{ label: 'Selecione a loja', value: null }}
                         onValueChange={(value) => setSelectedLoja(value)}
                         items={lojas.map(loja => ({ label: loja.nmLoja, value: loja.idLoja, key: loja.idLoja }))} />
-                    <Button title="Cadastrar" onPress={handleAddUser} />
+                <TouchableOpacity style = {styles.button} onPress={handleAddUser}>
+                    <Image 
+                        source={require('../../../assets/done3.png')}
+                        style={styles.img}
+                    />
+                </TouchableOpacity>
                 </View>
             </View></>
     );
@@ -103,6 +108,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         backgroundColor: '#fff',
+    },
+    img: {
+        // width: 60,
+        // height: 60  
+    },
+    button: {
+        borderRadius: 80,
+        marginHorizontal: 1,
+        padding: 5,
+        width: 60, // Defina a largura do botão para 120
+        height: 60, // Defina a altura do botão para 120
+        justifyContent: 'center', // Centralize o conteúdo verticalmente
+        alignItems: 'center', // Centralize o conteúdo horizontalmente
+        left: 150
+        // backgroundColor: 'black',
     },
     header: {
         flexDirection: 'row',
@@ -134,7 +154,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         marginBottom: 10,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
     },
 });
 

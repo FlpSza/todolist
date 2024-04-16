@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
@@ -118,16 +118,28 @@ const Producao = () => {
           )}
         </ScrollView>
         <View style={styles.bottomButtons}>
-          <TouchableOpacity onPress={() => setIsAbertura(true)}>
+        <TouchableOpacity onPress={() => setIsAbertura(true)}>
+            <Image source={require('../../../assets/abertura.png')}
+            style={styles.imgBtn}
+            />
             <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsAbertura(false)}>
+          <Image source={require('../../../assets/fechamento.png')}
+            style={styles.imgBtn}
+            />
             <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleObservationToggle}>
+          <Image source={require('../../../assets/observa.png')}
+            style={styles.imgBtn}
+            />
             <Text style={styles.buttonText}>Observação</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={generateReportPDF}>
+          <Image source={require('../../../assets/genRelatorio.png')}
+            style={styles.imgBtn}
+            />
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>
@@ -185,11 +197,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 20,
+    top: 40
+  },
+  imgBtn: {
+    height: 35,
+    width: 35,
+    alignContent: "center",
+    alignSelf: "center",
+    bottom: 10
+  },
+  imgBtn2: {
+    height: 45,
+    width: 45,
+    bottom: 15
   },
   buttonText: {
     fontSize: 12,
     fontWeight: 'bold',
     color: 'blue',
+    bottom: 10
   },
   activeButtonText: {
     fontSize: 16,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import RNPickerSelect from 'react-native-picker-select';
@@ -36,7 +36,12 @@ const CadStore = () => {
                 value={nome}
                 onChangeText={text => setNome(text)}
             />
-            <Button title="Cadastrar" onPress={handleAddStore} />
+                <TouchableOpacity style = {styles.button} onPress={handleAddStore}>
+                    <Image 
+                        source={require('../../../assets/done3.png')}
+                        style={styles.img}
+                    />
+                </TouchableOpacity>
         </View></>
     );
 };
@@ -48,6 +53,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         backgroundColor:'#fff'
+    },
+    img: {
+        // width: 60,
+        // height: 60  
+    },
+    button: {
+        borderRadius: 80,
+        marginHorizontal: 1,
+        padding: 5,
+        width: 60, // Defina a largura do botão para 120
+        height: 60, // Defina a altura do botão para 120
+        justifyContent: 'center', // Centralize o conteúdo verticalmente
+        alignItems: 'center', // Centralize o conteúdo horizontalmente
+        // backgroundColor: 'black',
     },
     input: {
         width: '100%',
