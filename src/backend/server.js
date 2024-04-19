@@ -49,7 +49,7 @@ function authenticateToken(req, res, next) {
 // Rota para login de usuárioa
 app.post('/login', (req, res) => {
     const { email, senha } = req.body;
-    const sql = 'SELECT * FROM Usuarios WHERE email = ?';
+    const sql = 'SELECT * FROM usuarios WHERE email = ?';
 
     pool.query(sql, [email], (err, results) => {
         if (err) {

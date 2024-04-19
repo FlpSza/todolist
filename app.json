@@ -20,19 +20,26 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false
         }
-      }
+      },
+      "bundleIdentifier": "com.felxsouza.iosApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.felxsouza.androidApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e77026e2-b900-4385-a7df-bb16cb47b002"
+      }
+    }
   }
 }
