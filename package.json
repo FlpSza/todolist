@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "dev": "node ./src/backend/server.js",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -23,7 +24,7 @@
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "expo": "~50.0.8",
+    "expo": "^49.0.23",
     "expo-font": "~11.10.3",
     "expo-linking": "~6.2.2",
     "expo-print": "~12.8.1",
