@@ -27,7 +27,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log(email, password)
     try {
-      const response = await axios.post('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/login', {
+      const response = await axios.post('https://server-checklist.onrender.com/login', {
         email,
         senha: password // Envie a senha como 'senha'
       });
@@ -40,7 +40,7 @@ export default function Login() {
       await AsyncStorage.setItem('token', response.data.token);
 
       // Obter informações adicionais do usuário usando o token
-      const userResponse = await axios.get('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/user-info', {
+      const userResponse = await axios.get('https://server-checklist.onrender.com/user-info', {
         headers: {
           Authorization: `Bearer ${response.data.token}`
         }

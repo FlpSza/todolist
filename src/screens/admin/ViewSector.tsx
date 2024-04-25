@@ -11,7 +11,7 @@ export default function ViewSector() {
 
     const fetchSectors = async () => {
         try {
-            const response = await axios.get('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/sectorlist');
+            const response = await axios.get('https://server-checklist.onrender.com/sectorlist');
             setSectors(response.data);
         } catch (error) {
             console.error('Erro ao buscar lista de setores:', error);
@@ -28,7 +28,7 @@ export default function ViewSector() {
 
     const handleDeleteSector = async (sectorId) => {
         try {
-            await axios.delete(`https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/sector/${sectorId}`);
+            await axios.delete(`https://server-checklist.onrender.com/sector/${sectorId}`);
             setSectors(sectors.filter(sector => sector.idSetor !== sectorId));
         } catch (error) {
             console.error('Erro ao excluir setor:', error);

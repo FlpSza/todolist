@@ -11,7 +11,7 @@ const CadStore = () => {
 
     const handleAddStore = async () => {
         try {
-            const response = await axios.post('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/lojas', {
+            const response = await axios.post('https://server-checklist.onrender.com/lojas', {
                 nmLoja: nome,
             });
             Alert.alert('Sucesso', response.data.mensagem);
