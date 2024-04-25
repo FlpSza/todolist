@@ -28,7 +28,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.felxsouza.androidApp"
+      "package": "com.felxsouza.androidApp",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
