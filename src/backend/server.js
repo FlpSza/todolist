@@ -99,7 +99,7 @@ app.post('/users', async (req, res) => {
         }
     
         // SQL para inserir o novo usuário no banco de dados
-        const sql = 'INSERT INTO Usuarios (nome, email, senha, idSetor, idLoja) VALUES (?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO usuarios (nome, email, senha, idSetor, idLoja) VALUES (?, ?, ?, ?, ?)';
     
         // Executar a consulta SQL para inserir o usuário
         pool.query(sql, [nome, email, senha, idSetor, idLoja], (err, results) => {
@@ -189,7 +189,7 @@ app.post('/lojas', (req, res) => {
 
     try {
         // SQL para inserir a nova loja no banco de dados
-        const sql = 'INSERT INTO Lojas (nmLoja) VALUES (?)';
+        const sql = 'INSERT INTO lojas (nmLoja) VALUES (?)';
 
         // Executar a consulta SQL para inserir a loja
         pool.query(sql, [nmLoja], (err, results) => {
@@ -214,7 +214,7 @@ app.delete('/users/:nome', async (req, res) => {
     const nomeUsuario = req.params.nome;
     try {
         // Excluir o usuário do banco de dados pelo nome
-        pool.query('DELETE FROM Usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
+        pool.query('DELETE FROM usuarios WHERE nome = ?', [nomeUsuario], (err, results) => {
             if (err) {
                 console.error('Erro ao excluir usuário:', err);
                 res.status(500).send('Erro ao excluir usuário');
@@ -243,7 +243,7 @@ app.delete('/store/:id', async (req, res) => {
             return;
         }
         // Excluir a loja do banco de dados
-        pool.query('DELETE FROM Lojas WHERE idLoja = ?', [lojaId], (err, results) => {
+        pool.query('DELETE FROM lojas WHERE idLoja = ?', [lojaId], (err, results) => {
             if (err) {
                 console.error('Erro ao excluir loja:', err);
                 res.status(500).send('Erro ao excluir loja');
@@ -268,7 +268,7 @@ app.delete('/sector/:id', async (req, res) => {
             return;
         }
         // Excluir o setor do banco de dados
-        pool.query('DELETE FROM Setores WHERE idSetor = ?', [setId], (err, results) => {
+        pool.query('DELETE FROM setores WHERE idSetor = ?', [setId], (err, results) => {
             if (err) {
                 console.error('Erro ao excluir setor:', err);
                 res.status(500).send('Erro ao excluir setor');
@@ -289,7 +289,7 @@ app.post('/setores', async (req, res) => {
 
     try {
         // SQL para inserir o novo setor no banco de dados
-        const sql = 'INSERT INTO Setores (nmSetor) VALUES (?)';
+        const sql = 'INSERT INTO setores (nmSetor) VALUES (?)';
 
         // Executar a consulta SQL para inserir o setor
         pool.query(sql, [nmSetor], (err, results) => {
