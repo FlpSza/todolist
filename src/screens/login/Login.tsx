@@ -71,7 +71,7 @@ export default function Login() {
       if (error.response) {
         // O servidor retornou uma resposta com um status de erro
         console.error('Erro de login:', error.response.data);
-        console.error('Status do erro:', error.response.status);
+        console.error('Status do erro:', error.response);
       } else if (error.request) {
         // A requisição foi feita, mas não recebeu resposta
         console.error('Erro de rede:', error.request);
