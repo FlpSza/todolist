@@ -174,8 +174,7 @@ app.get('/userlist', (req, res) => {
     // Lógica para buscar a lista de usuários no banco de dados
     pool.query('SELECT * FROM usuarios', (err, results) => {
         if (err) {
-            consolnpm install lru-cache
-e.error('Erro ao buscar lista de usuários:', err);
+            console.error('Erro ao buscar lista de usuários:', err);
             res.status(500).send('Erro ao buscar lista de usuários');
             return;
         }
