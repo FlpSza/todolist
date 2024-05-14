@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import moment from 'moment';
 
 const ChecklistItem = ({ item, isChecked, onToggle }) => {
   const handleCheckboxToggle = () => {
@@ -91,6 +94,51 @@ const Asg = () => {
     setShowObservationAbertura(false);
   };
 
+const gerarRelatorio = async () => {
+  try {
+    const dataHora = moment().format('DD/MM/YYYY HH:mm');
+
+    // Verifica se há perguntas não respondidas e preenche automaticamente como "Não"
+    const perguntasComRespostas = checklistItems.map((item) => ({
+      textoPergunta: item.textoPergunta,
+      resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
+    }));
+
+    const relatorioHTML = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            .pergunta { margin-bottom: 10px; }
+            .resposta-sim { color: green; }
+            .resposta-nao { color: red; }
+            .data-hora { margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          ${perguntasComRespostas.map((pergunta) => `
+            <div class="pergunta">
+              <strong>${pergunta.textoPergunta}</strong>
+              <span class="${pergunta.resposta === 'Sim' ? 'resposta-sim' : 'resposta-nao'}">${pergunta.resposta}</span>
+            </div>
+          `).join('')}
+          <div class="data-hora">Data e Hora de Geração: ${dataHora}</div>
+          <div>Espaço para Assinatura:</div>
+        </body>
+      </html>
+    `;
+
+    const resultado = await Print.printToFileAsync({ html: relatorioHTML });
+    const pdfUri = resultado.uri;
+
+    // Compartilhar o PDF gerado
+    await Sharing.shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
+  } catch (error) {
+    Alert.alert('Erro', error.message);
+    console.error('Erro ao gerar o relatório:', error);
+  }
+};
+
   const navigation = useNavigation();
 
   return (
@@ -145,7 +193,7 @@ const Asg = () => {
               {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={gerarRelatorio}>
             <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
