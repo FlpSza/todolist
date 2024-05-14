@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert, Image } from 'react-native';
-import * as Print from 'expo-print';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import moment from 'moment'; // Para manipulação de datas
 
-const ChecklistItem = ({ item, onToggle }) => {
-  const [isChecked, setIsChecked] = useState(false);
-
+const ChecklistItem = ({ item, isChecked, onToggle }) => {
   const handleCheckboxToggle = () => {
-    setIsChecked(!isChecked);
     onToggle(item, !isChecked);
   };
 
@@ -46,7 +41,7 @@ const Asg = () => {
         const response = await axios.get(`https://server-checklist.onrender.com/perguntas/4?type=${tipoPergunta}`);
 
         if (response.data && Array.isArray(response.data)) {
-          const questions = response.data.map((item) => item.textoPergunta);
+          const questions = response.data.map((item) => ({ textoPergunta: item.textoPergunta, isChecked: false }));
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
@@ -65,19 +60,25 @@ const Asg = () => {
   }, [isAbertura]);
 
   useEffect(() => {
-    setShowObservationFechamento(false); // Feche a observação de abertura quando mudar para fechamento
+    setShowObservationFechamento(false); // Feche a observação de fechamento quando mudar para abertura
   }, [!isAbertura]);
 
   const initializeResponses = (questions) => {
     const initialResponses = {};
     questions.forEach((question) => {
-      initialResponses[question] = '';
+      initialResponses[question.textoPergunta] = '';
     });
     setResponses(initialResponses);
   };
 
-  const handleToggle = (item, option) => {
-    setResponses({ ...responses, [item]: option });
+  const handleToggle = (item, isChecked) => {
+    const updatedChecklistItems = checklistItems.map((question) => {
+      if (question.textoPergunta === item) {
+        return { ...question, isChecked };
+      }
+      return question;
+    });
+    setChecklistItems(updatedChecklistItems);
   };
 
   const handleObservationToggleAbertura = () => {
@@ -103,7 +104,12 @@ const Asg = () => {
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           {checklistItems.map((item, index) => (
-            <ChecklistItem key={index} item={item} onToggle={handleToggle} />
+            <ChecklistItem
+              key={index}
+              item={item.textoPergunta}
+              isChecked={item.isChecked}
+              onToggle={handleToggle}
+            />
           ))}
           {showObservationAbertura && (
             <TextInput
@@ -170,17 +176,25 @@ const styles = StyleSheet.create({
     width: 45,
     bottom: 15
   },
-  item: {
+  itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  text: {
+  questionContainer: {
     flex: 1,
-    fontSize: 18,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginRight: 10,
+  },
+  questionText: {
+    fontSize: 16,
   },
   checkbox: {
     width: 24,
@@ -191,54 +205,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-    itemContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-    },
-    questionContainer: {
-      flex: 1,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-      padding: 10,
-      marginRight: 10,
-    },
-    questionText: {
-      fontSize: 16,
-    },
-    checkbox: {
-      width: 24,
-      height: 24,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 4,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
   checked: {
-    backgroundColor: 'blue', // Cor quando o checkbox está marcado
-  },
-  options: {
-    flexDirection: 'row',
-  },
-  optionButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  optionText: {
-    fontSize: 16,
-  },
-  selectedOption: {
-    backgroundColor: '#ccc',
+    backgroundColor: 'blue',
   },
   observationInput: {
     borderWidth: 1,
@@ -262,7 +230,7 @@ const styles = StyleSheet.create({
   activeButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'green', // Cor diferente para a aba ativa
+    color: 'green',
   },
   header: {
     flexDirection: 'row',
@@ -272,7 +240,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    width: '100%', // Defina a largura total do cabeçalho
+    width: '100%',
   },
   headerText: {
     fontSize: 18,
