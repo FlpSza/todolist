@@ -11,12 +11,14 @@ const ChecklistItem = ({ item, onToggle }) => {
 
   const handleCheckboxToggle = () => {
     setIsChecked(!isChecked);
-    onToggle(item, !isChecked); // Passa o estado atual do checkbox para o manipulador de toggle
+    onToggle(item, !isChecked);
   };
 
   return (
-    <View style={styles.item}>
-      <Text style={styles.text}>{item}</Text>
+    <View style={styles.itemContainer}>
+      <View style={styles.questionContainer}>
+        <Text style={styles.questionText}>{item}</Text>
+      </View>
       <TouchableOpacity onPress={handleCheckboxToggle}>
         <View style={[styles.checkbox, isChecked ? styles.checked : null]}>
           {isChecked && <Ionicons name="checkmark" size={20} color="white" />}
@@ -26,54 +28,6 @@ const ChecklistItem = ({ item, onToggle }) => {
   );
 };
 
-// const Relatorio = ({ usuarioLogado, respostas }) => {
-//   const [relatorioGerado, setRelatorioGerado] = useState(null);
-
-//   const gerarRelatorioPDF = async () => {
-//     try {
-//       const today = moment().format('DD/MM/YYYY'); // Obtém a data atual formatada
-//       const htmlContent = `
-//         <h1>RELATÓRIO ABERTURA/FECHAMENTO</h1>
-//         <p><strong>Responsável:</strong> ${usuarioLogado}</p>
-//         <p><strong>Data:</strong> ${today}</p>
-//         <h2>Perguntas e Respostas</h2>
-//         ${respostas.map((pergunta, index) => `
-//           <p><strong>Pergunta ${index + 1}:</strong> ${pergunta.pergunta}</p>
-//           <p><strong>Resposta:</strong> ${pergunta.resposta}</p>
-//         `).join('')}
-//         <h2>Observações</h2>
-//         <p>Aqui você pode adicionar as observações.</p>
-//         <br/><br/><br/>
-//         <p style="text-align: right;">__________________<br/>Assinatura</p>
-//       `;
-
-//       const options = {
-//         html: htmlContent,
-//         fileName: 'relatorio.pdf',
-//         directory: 'Documents',
-//       };
-
-//       const pdf = await RNHTMLtoPDF.convert(options);
-//       setRelatorioGerado(pdf.filePath);
-//     } catch (error) {
-//       console.error('Erro ao gerar o relatório PDF:', error);
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <TouchableOpacity onPress={gerarRelatorioPDF}>
-//         <Text>Gerar Relatório</Text>
-//       </TouchableOpacity>
-//       {relatorioGerado && (
-//         <TouchableOpacity onPress={() => alert(`Relatório gerado em: ${relatorioGerado}`)}>
-//           <Text>Abrir Relatório</Text>
-//         </TouchableOpacity>
-//       )}
-//     </View>
-//   );
-// };
-
 const Asg = () => {
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
@@ -81,15 +35,14 @@ const Asg = () => {
   const [observationFechamento, setObservationFechamento] = useState('');
   const [showObservationAbertura, setShowObservationAbertura] = useState(false);
   const [showObservationFechamento, setShowObservationFechamento] = useState(false);
-  const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
+  const [isAbertura, setIsAbertura] = useState(true);
   const [exibirRelatorio, setExibirRelatorio] = useState(false);
   const [relatorioGerado, setRelatorioGerado] = useState(null);
-
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
       try {
-        const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento'; 
+        const tipoPergunta = isAbertura ? 'Abertura' : 'Fechamento';
         const response = await axios.get(`https://server-checklist.onrender.com/perguntas/4?type=${tipoPergunta}`);
 
         if (response.data && Array.isArray(response.data)) {
@@ -106,8 +59,14 @@ const Asg = () => {
 
     fetchASGQuestions();
   }, [isAbertura]);
-  
-  
+
+  useEffect(() => {
+    setShowObservationAbertura(false); // Feche a observação de abertura quando mudar para fechamento
+  }, [isAbertura]);
+
+  useEffect(() => {
+    setShowObservationFechamento(false); // Feche a observação de abertura quando mudar para fechamento
+  }, [!isAbertura]);
 
   const initializeResponses = (questions) => {
     const initialResponses = {};
@@ -123,40 +82,14 @@ const Asg = () => {
 
   const handleObservationToggleAbertura = () => {
     setShowObservationAbertura(!showObservationAbertura);
+    setShowObservationFechamento(false);
   };
 
   const handleObservationToggleFechamento = () => {
     setShowObservationFechamento(!showObservationFechamento);
+    setShowObservationAbertura(false);
   };
 
-
-// const gerarRelatorioPDF = async () => {
-//   try {
-//     const today = moment().format('DD/MM/YYYY'); // Obtém a data atual formatada
-//     const htmlContent = `
-//       <h1>RELATÓRIO ABERTURA/FECHAMENTO</h1>
-//       <p><strong>Responsável:</strong> TESTE</p>
-//       <p><strong>Data:</strong> TESTE</p>
-//       <h2>Perguntas e Respostas</h2>
-//       TESTE
-//       <h2>Observações</h2>
-//       <p>Aqui você pode adicionar as observações.</p>
-//       <br/><br/><br/>
-//       <p style="text-align: right;">__________________<br/>Assinatura</p>
-//     `;
-
-//     const options = {
-//       html: htmlContent,
-//       fileName: 'relatorio.pdf',
-//       directory: 'Documents',
-//     };
-
-//     // const pdf = await RNHTMLtoPDF.convert(options);
-//     // setRelatorioGerado(pdf.filePath);
-//   } catch (error) {
-//     console.error('Erro ao gerar o relatório PDF:', error);
-//   }
-// };
   const navigation = useNavigation();
 
   return (
@@ -181,31 +114,33 @@ const Asg = () => {
               multiline
             />
           )}
-
-          </ScrollView>
+          {showObservationFechamento && (
+            <TextInput
+              style={styles.observationInput}
+              value={observationFechamento}
+              onChangeText={setObservationFechamento}
+              placeholder="Digite sua observação para fechamento..."
+              multiline
+            />
+          )}
+        </ScrollView>
         <View style={styles.bottomButtons}>
           <TouchableOpacity onPress={() => setIsAbertura(true)}>
-            <Image source={require('../../../assets/abertura.png')}
-            style={styles.imgBtn}
-            />
+            <Image source={require('../../../assets/abertura.png')} style={styles.imgBtn} />
             <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsAbertura(false)}>
-          <Image source={require('../../../assets/fechamento.png')}
-            style={[styles.imgBtn, styles.imgBtn2]}
-            />
+            <Image source={require('../../../assets/fechamento.png')} style={[styles.imgBtn, styles.imgBtn2]} />
             <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
             <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
-            <Text style={isAbertura ? styles.imgBtn : styles.imgBtn}>
+            <Text style={styles.buttonText}>
               {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity>
-          <Image source={require('../../../assets/genRelatorio.png')}
-            style={styles.imgBtn}
-            />
+            <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
             <Text style={styles.buttonText}>Gerar Relatório</Text>
           </TouchableOpacity>
         </View>
@@ -256,6 +191,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+    itemContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: '#ccc',
+    },
+    questionContainer: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 8,
+      padding: 10,
+      marginRight: 10,
+    },
+    questionText: {
+      fontSize: 16,
+    },
+    checkbox: {
+      width: 24,
+      height: 24,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 4,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   checked: {
     backgroundColor: 'blue', // Cor quando o checkbox está marcado
   },
