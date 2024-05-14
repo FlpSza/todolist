@@ -74,15 +74,20 @@ const Asg = () => {
     setResponses(initialResponses);
   };
 
-  const handleToggle = (item, isChecked) => {
-    const updatedChecklistItems = checklistItems.map((question) => {
-      if (question.textoPergunta === item) {
-        return { ...question, isChecked };
-      }
-      return question;
-    });
-    setChecklistItems(updatedChecklistItems);
-  };
+const handleToggle = (item, isChecked) => {
+  const updatedChecklistItems = checklistItems.map((question) => {
+    if (question.textoPergunta === item) {
+      return { ...question, isChecked };
+    }
+    return question;
+  });
+  setChecklistItems(updatedChecklistItems);
+
+  // Atualiza as respostas conforme a marcação da checkbox
+  const updatedResponses = { ...responses };
+  updatedResponses[item] = isChecked; // Define a resposta como true ou false
+  setResponses(updatedResponses);
+};
 
   const handleObservationToggleAbertura = () => {
     setShowObservationAbertura(!showObservationAbertura);
