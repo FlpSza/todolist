@@ -4,10 +4,10 @@
     "slug": "checklist",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logopronta.png",
+    "icon": "https://imgur.com/3wiC69M",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logoRd.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,7 +25,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logopronta.png",
+        "foregroundImage": "https://imgur.com/3wiC69M",
         "backgroundColor": "#ffffff"
       },
       "package": "com.felxsouza.androidApp",

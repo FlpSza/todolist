@@ -6,6 +6,27 @@ import { useNavigation } from '@react-navigation/native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const fetchUserData = async () => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    const response = await axios.get('https://server-checklist.onrender.com/user-info', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
 
 const ChecklistItem = ({ item, isChecked, onToggle }) => {
   const handleCheckboxToggle = () => {
@@ -103,35 +124,87 @@ const gerarRelatorio = async () => {
   try {
     const dataHora = moment().format('DD/MM/YYYY HH:mm');
 
+    // Obtenha os dados do usuário antes de criar o relatório
+    const userData = await fetchUserData();
+
     // Verifica se há perguntas não respondidas e preenche automaticamente como "Não"
     const perguntasComRespostas = checklistItems.map((item) => ({
       textoPergunta: item.textoPergunta,
       resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
     }));
 
-    const relatorioHTML = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; }
-            .pergunta { margin-bottom: 10px; }
-            .resposta-sim { color: green; }
-            .resposta-nao { color: red; }
-            .data-hora { margin-top: 20px; }
-          </style>
-        </head>
-        <body>
-          ${perguntasComRespostas.map((pergunta) => `
-            <div class="pergunta">
-              <strong>${pergunta.textoPergunta}</strong>
-              <span class="${pergunta.resposta === 'Sim' ? 'resposta-sim' : 'resposta-nao'}">${pergunta.resposta}</span>
-            </div>
-          `).join('')}
+const relatorioHTML = `
+<html>
+  <head>
+    <style>
+      .logo-container {
+        text-align: center; /* Centraliza horizontalmente */
+        margin-bottom: 50px; /* Adiciona margem inferior para separar da próxima seção */
+      }
+      .logo-img {
+        max-width: 30%;
+        height: auto;
+        border-radius: 50%;
+      }
+      body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+      .content { flex: 1; display: flex; flex-direction: column; }
+      .main-container {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .pergunta {
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .resposta-sim { color: green; }
+      .resposta-nao { color: red; }
+      .data-hora-container {
+        margin-top: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: right;
+      }
+      footer {
+        text-align: center;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-container">
+      <img class="logo-img" src="./logopronta.png" alt="Logo da empresa" />
+    </div>
+    <div class="content">
+      <div class="main-container">
+        <div class="pergunta">
+          <strong>Nome do Usuário: ${userData.name}</strong>
+        </div>
+        ${perguntasComRespostas.map((pergunta) => `
+          <div class="pergunta">
+            <strong>${pergunta.textoPergunta}</strong>
+            <span class="${pergunta.resposta === 'Sim' ? 'resposta-sim' : 'resposta-nao'}">${pergunta.resposta}</span>
+          </div>
+        `).join('')}
+        <div class="data-hora-container">
           <div class="data-hora">Data e Hora de Geração: ${dataHora}</div>
-          <div>Espaço para Assinatura:</div>
-        </body>
-      </html>
-    `;
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div>______________________________________<br>Assinatura do responsável</div>
+    </footer>
+  </body>
+</html>
+`;
+
 
     const resultado = await Print.printToFileAsync({ html: relatorioHTML });
     const pdfUri = resultado.uri;
