@@ -134,12 +134,6 @@ const gerarRelatorio = async () => {
       resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
     }));
 
-await MailComposer.composeAsync({
-recipients: ['fellipe.silva@grupostarinfo.com.br'],
-subject: 'Relatório ASG',
-body: 'Segue em anexo relatorio do dia para o setor "ASG".',
-attachments: [pdfUri]
-})
 const relatorioHTML = `
 <html>
   <head>
@@ -215,6 +209,17 @@ const relatorioHTML = `
 
     const resultado = await Print.printToFileAsync({ html: relatorioHTML });
     const pdfUri = resultado.uri;
+        // Enviar o relatório por e-mail apenas se pdfUri estiver definido
+        if (pdfUri) {
+          await MailComposer.composeAsync({
+            recipients: ['email@example.com'],
+            subject: 'Relatório',
+            body: 'Por favor, encontre o relatório em anexo.',
+            attachments: [pdfUri],
+          });
+        } else {
+          throw new Error('URI do arquivo PDF não definida.');
+        }
 
     // Compartilhar o PDF gerado
     await Sharing.shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
