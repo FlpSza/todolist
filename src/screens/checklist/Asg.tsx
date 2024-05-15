@@ -7,6 +7,7 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MailComposer} from 'expo';
 
 const fetchUserData = async () => {
   try {
@@ -133,6 +134,12 @@ const gerarRelatorio = async () => {
       resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
     }));
 
+await MailComposer.composeAsync({
+recipients: ['fellipe.silva@grupostarinfo.com.br'],
+subject: 'Relatório ASG',
+body: 'Segue em anexo relatorio do dia para o setor "ASG".',
+attachments: [pdfUri]
+})
 const relatorioHTML = `
 <html>
   <head>
