@@ -7,11 +7,11 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {MailComposer} from 'expo';
+import email from 'react-native-email';
 
 const fetchUserData = async () => {
   try {
-    const token = await AsyncStorage.getItem('userToken');
+    const token = await AsyncStorage.getItem('token');
     if (!token) {
       throw new Error('Token not found');
     }
@@ -127,6 +127,7 @@ const gerarRelatorio = async () => {
 
     // Obtenha os dados do usuário antes de criar o relatório
     const userData = await fetchUserData();
+    console.log(userData);
 
     // Verifica se há perguntas não respondidas e preenche automaticamente como "Não"
     const perguntasComRespostas = checklistItems.map((item) => ({
@@ -181,12 +182,12 @@ const relatorioHTML = `
   </head>
   <body>
     <div class="logo-container">
-      <img class="logo-img" src="./logopronta.png" alt="Logo da empresa" />
+      <img class="logo-img" src="https://i.imgur.com/3wiC69M.png" alt="Logo da empresa" />
     </div>
     <div class="content">
       <div class="main-container">
         <div class="pergunta">
-          <strong>Nome do Usuário: ${userData.name}</strong>
+          <strong>Nome do Usuário: ${userData.nome}</strong>
         </div>
         ${perguntasComRespostas.map((pergunta) => `
           <div class="pergunta">
@@ -199,6 +200,18 @@ const relatorioHTML = `
         </div>
       </div>
     </div>
+    ${observationAbertura && `
+          <div class="observacao">
+            <strong>Observação:</strong>
+            <p>${observationAbertura}</p>
+          </div>
+        `}
+        ${observationFechamento && `
+          <div class="observacao">
+            <strong>Observação:</strong>
+            <p>${observationFechamento}</p>
+          </div>
+        `}
     <footer>
       <div>______________________________________<br>Assinatura do responsável</div>
     </footer>
@@ -209,18 +222,28 @@ const relatorioHTML = `
 
     const resultado = await Print.printToFileAsync({ html: relatorioHTML });
     const pdfUri = resultado.uri;
-        // Enviar o relatório por e-mail apenas se pdfUri estiver definido
-        if (pdfUri) {
-          await MailComposer.composeAsync({
-            recipients: ['email@example.com'],
-            subject: 'Relatório',
-            body: 'Por favor, encontre o relatório em anexo.',
-            attachments: [pdfUri],
-          });
-        } else {
-          throw new Error('URI do arquivo PDF não definida.');
-        }
 
+sendEmailWithAttachment = async () => {
+  try {
+    const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
+    const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
+    const subject = 'Relatorio do dia do setor ASG';
+    const body = 'Segue em anexo o relatorio do dia do setor';
+    const attachment = {
+      uri: [pdfUri],
+      name: 'relatorio.pdf',
+    };
+
+    email(to, bcc, {
+        subject,
+        body,
+        attachment,
+    });
+  } catch (error) {
+    console.error('Erro ao enviar email:', error);
+  }
+};
+    await sendEmailWithAttachment();
     // Compartilhar o PDF gerado
     await Sharing.shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
   } catch (error) {
