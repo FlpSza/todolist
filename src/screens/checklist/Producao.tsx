@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Alert, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import email from 'react-native-email';
+
+const fetchUserData = async () => {
+  try {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    const response = await axios.get('https://server-checklist.onrender.com/user-info', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
 
 
 const ChecklistItem = ({ item, onToggle }) => {
