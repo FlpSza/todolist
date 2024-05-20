@@ -70,13 +70,13 @@ const Producao = () => {
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
-          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor ASG:`, response.data);
+          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor Produção:`, response.data);
         }
       } catch (error) {
-        console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
+        console.error(`Erro ao buscar perguntas do tipo para o setor Produção:`, error);
       }
     };
-  
+
     fetchASGQuestions();
   }, [isAbertura]);
 
@@ -227,7 +227,7 @@ sendEmailWithAttachment = async () => {
   try {
     const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
     const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
-    const subject = 'Relatorio do dia do setor ASG';
+    const subject = 'Relatorio do dia do setor PRODUCAO';
     const body = 'Segue em anexo o relatorio do dia do setor';
     const attachment = {
       uri: [pdfUri],
@@ -255,161 +255,161 @@ sendEmailWithAttachment = async () => {
   const navigation = useNavigation();
 
   return (
-      <>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="blue" />
+    <>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="blue" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>CHECKLIST PRODUCAO</Text>
+      </View>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          {checklistItems.map((item, index) => (
+            <ChecklistItem
+              key={index}
+              item={item.textoPergunta}
+              isChecked={item.isChecked}
+              onToggle={handleToggle}
+            />
+          ))}
+          {showObservationAbertura && (
+            <TextInput
+              style={styles.observationInput}
+              value={observationAbertura}
+              onChangeText={setObservationAbertura}
+              placeholder="Digite sua observação para abertura..."
+              multiline
+            />
+          )}
+          {showObservationFechamento && (
+            <TextInput
+              style={styles.observationInput}
+              value={observationFechamento}
+              onChangeText={setObservationFechamento}
+              placeholder="Digite sua observação para fechamento..."
+              multiline
+            />
+          )}
+        </ScrollView>
+        <View style={styles.bottomButtons}>
+          <TouchableOpacity onPress={() => setIsAbertura(true)}>
+            <Image source={require('../../../assets/abertura.png')} style={styles.imgBtn} />
+            <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
           </TouchableOpacity>
-          <Text style={styles.headerText}>CHECKLIST ASG</Text>
+          <TouchableOpacity onPress={() => setIsAbertura(false)}>
+            <Image source={require('../../../assets/fechamento.png')} style={[styles.imgBtn, styles.imgBtn2]} />
+            <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
+            <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
+            <Text style={styles.buttonText}>
+              {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={gerarRelatorio}>
+            <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
+            <Text style={styles.buttonText}>Gerar Relatório</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.container}>
-          <ScrollView style={styles.scrollView}>
-            {checklistItems.map((item, index) => (
-              <ChecklistItem
-                key={index}
-                item={item.textoPergunta}
-                isChecked={item.isChecked}
-                onToggle={handleToggle}
-              />
-            ))}
-            {showObservationAbertura && (
-              <TextInput
-                style={styles.observationInput}
-                value={observationAbertura}
-                onChangeText={setObservationAbertura}
-                placeholder="Digite sua observação para abertura..."
-                multiline
-              />
-            )}
-            {showObservationFechamento && (
-              <TextInput
-                style={styles.observationInput}
-                value={observationFechamento}
-                onChangeText={setObservationFechamento}
-                placeholder="Digite sua observação para fechamento..."
-                multiline
-              />
-            )}
-          </ScrollView>
-          <View style={styles.bottomButtons}>
-            <TouchableOpacity onPress={() => setIsAbertura(true)}>
-              <Image source={require('../../../assets/abertura.png')} style={styles.imgBtn} />
-              <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsAbertura(false)}>
-              <Image source={require('../../../assets/fechamento.png')} style={[styles.imgBtn, styles.imgBtn2]} />
-              <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
-              <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
-              <Text style={styles.buttonText}>
-                {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={gerarRelatorio}>
-              <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
-              <Text style={styles.buttonText}>Gerar Relatório</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </>
-    );
-  };
+      </View>
+    </>
+  );
+};
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      justifyContent: 'space-between',
-    },
-    scrollView: {
-      flex: 1,
-    },
-    imgBtn: {
-      height: 35,
-      width: 35,
-      alignContent: "center",
-      alignSelf: "center",
-      bottom: 10
-    },
-    imgBtn2: {
-      height: 45,
-      width: 45,
-      bottom: 15
-    },
-    itemContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-    },
-    questionContainer: {
-      flex: 1,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-      padding: 10,
-      marginRight: 10,
-    },
-    questionText: {
-      fontSize: 16,
-    },
-    checkbox: {
-      width: 24,
-      height: 24,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 4,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    checked: {
-      backgroundColor: 'blue',
-    },
-    observationInput: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 5,
-      padding: 10,
-      marginVertical: 10,
-    },
-    bottomButtons: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginVertical: 20,
-      top: 40
-    },
-    buttonText: {
-      fontSize: 12,
-      fontWeight: 'bold',
-      color: 'blue',
-      bottom: 10
-    },
-    activeButtonText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: 'green',
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 10,
-      paddingTop: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-      width: '100%',
-    },
-    headerText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    backButton: {
-      padding: 5,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  imgBtn: {
+    height: 35,
+    width: 35,
+    alignContent: "center",
+    alignSelf: "center",
+    bottom: 10
+  },
+  imgBtn2: {
+    height: 45,
+    width: 45,
+    bottom: 15
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  questionContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginRight: 10,
+  },
+  questionText: {
+    fontSize: 16,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checked: {
+    backgroundColor: 'blue',
+  },
+  observationInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+    top: 40
+  },
+  buttonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'blue',
+    bottom: 10
+  },
+  activeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'green',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    width: '100%',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  backButton: {
+    padding: 5,
+  },
+});
 
 export default Producao;

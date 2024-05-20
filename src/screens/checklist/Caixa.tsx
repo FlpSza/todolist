@@ -29,7 +29,6 @@ const fetchUserData = async () => {
   }
 };
 
-
 const ChecklistItem = ({ item, isChecked, onToggle }) => {
   const handleCheckboxToggle = () => {
     onToggle(item, !isChecked);
@@ -71,13 +70,13 @@ const Caixa = () => {
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
-          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor ASG:`, response.data);
+          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor Caixa:`, response.data);
         }
       } catch (error) {
-        console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
+        console.error(`Erro ao buscar perguntas do tipo para o setor Caixa:`, error);
       }
     };
-  
+
     fetchASGQuestions();
   }, [isAbertura]);
 
@@ -228,7 +227,7 @@ sendEmailWithAttachment = async () => {
   try {
     const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
     const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
-    const subject = 'Relatorio do dia do setor ASG';
+    const subject = 'Relatorio do dia do setor CAIXA';
     const body = 'Segue em anexo o relatorio do dia do setor';
     const attachment = {
       uri: [pdfUri],
@@ -261,7 +260,7 @@ sendEmailWithAttachment = async () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="blue" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>CHECKLIST ASG</Text>
+        <Text style={styles.headerText}>CHECKLIST CAIXA</Text>
       </View>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>

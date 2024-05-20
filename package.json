@@ -24,6 +24,7 @@
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "eas-cli": "^9.0.7",
     "expo": "^49.0.23",
     "expo-dev-client": "~2.4.13",
     "expo-font": "^11.10.2",

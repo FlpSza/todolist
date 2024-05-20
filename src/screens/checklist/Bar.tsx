@@ -51,9 +51,13 @@ const ChecklistItem = ({ item, isChecked, onToggle }) => {
 const Bar = () => {
   const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
-  const [observation, setObservation] = useState('');
-  const [showObservation, setShowObservation] = useState(false);
-  const [isAbertura, setIsAbertura] = useState(true); // Estado para controlar se é abertura ou fechamento
+  const [observationAbertura, setObservationAbertura] = useState('');
+  const [observationFechamento, setObservationFechamento] = useState('');
+  const [showObservationAbertura, setShowObservationAbertura] = useState(false);
+  const [showObservationFechamento, setShowObservationFechamento] = useState(false);
+  const [isAbertura, setIsAbertura] = useState(true);
+  const [exibirRelatorio, setExibirRelatorio] = useState(false);
+  const [relatorioGerado, setRelatorioGerado] = useState(null);
 
   useEffect(() => {
     const fetchASGQuestions = async () => {
@@ -66,14 +70,14 @@ const Bar = () => {
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
-          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor BAR:`, response.data);
+          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor Bar:`, response.data);
         }
       } catch (error) {
-        console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
+        console.error(`Erro ao buscar perguntas do tipo para o setor Bar:`, error);
       }
     };
 
-  fetchASGQuestions();
+    fetchASGQuestions();
   }, [isAbertura]);
 
   useEffect(() => {
@@ -117,146 +121,146 @@ const handleToggle = (item, isChecked) => {
     setShowObservationAbertura(false);
   };
 
-  const gerarRelatorio = async () => {
-    try {
-      const dataHora = moment().format('DD/MM/YYYY HH:mm');
+const gerarRelatorio = async () => {
+  try {
+    const dataHora = moment().format('DD/MM/YYYY HH:mm');
 
-      // Obtenha os dados do usuário antes de criar o relatório
-      const userData = await fetchUserData();
-      console.log(userData);
+    // Obtenha os dados do usuário antes de criar o relatório
+    const userData = await fetchUserData();
+    console.log(userData);
 
-      // Verifica se há perguntas não respondidas e preenche automaticamente como "Não"
-      const perguntasComRespostas = checklistItems.map((item) => ({
-        textoPergunta: item.textoPergunta,
-        resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
-      }));
+    // Verifica se há perguntas não respondidas e preenche automaticamente como "Não"
+    const perguntasComRespostas = checklistItems.map((item) => ({
+      textoPergunta: item.textoPergunta,
+      resposta: responses[item.textoPergunta] === true ? 'Sim' : 'Não',
+    }));
 
-  const relatorioHTML = `
-  <html>
-    <head>
-      <style>
-        .logo-container {
-          text-align: center; /* Centraliza horizontalmente */
-          margin-bottom: 50px; /* Adiciona margem inferior para separar da próxima seção */
-        }
-        .logo-img {
-          max-width: 30%;
-          height: auto;
-          border-radius: 50%;
-        }
-        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
-        .content { flex: 1; display: flex; flex-direction: column; }
-        .main-container {
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          padding: 20px;
-          margin: 20px;
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-        }
-        .pergunta {
-          margin-bottom: 10px;
-          border: 1px solid #ccc;
-          padding: 10px;
-          border-radius: 5px;
-        }
-        .resposta-sim { color: green; }
-        .resposta-nao { color: red; }
-        .data-hora-container {
-          margin-top: auto;
-          border: 1px solid #ccc;
-          padding: 10px;
-          border-radius: 5px;
-          text-align: right;
-        }
-        footer {
-          text-align: center;
-          padding: 20px 0;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="logo-container">
-        <img class="logo-img" src="https://i.imgur.com/3wiC69M.png" alt="Logo da empresa" />
-      </div>
-      <div class="content">
-        <div class="main-container">
+const relatorioHTML = `
+<html>
+  <head>
+    <style>
+      .logo-container {
+        text-align: center; /* Centraliza horizontalmente */
+        margin-bottom: 50px; /* Adiciona margem inferior para separar da próxima seção */
+      }
+      .logo-img {
+        max-width: 30%;
+        height: auto;
+        border-radius: 50%;
+      }
+      body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+      .content { flex: 1; display: flex; flex-direction: column; }
+      .main-container {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .pergunta {
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .resposta-sim { color: green; }
+      .resposta-nao { color: red; }
+      .data-hora-container {
+        margin-top: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: right;
+      }
+      footer {
+        text-align: center;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-container">
+      <img class="logo-img" src="https://i.imgur.com/3wiC69M.png" alt="Logo da empresa" />
+    </div>
+    <div class="content">
+      <div class="main-container">
+        <div class="pergunta">
+          <strong>Nome do Usuário: ${userData.nome}</strong>
+        </div>
+        ${perguntasComRespostas.map((pergunta) => `
           <div class="pergunta">
-            <strong>Nome do Usuário: ${userData.nome}</strong>
+            <strong>${pergunta.textoPergunta}</strong>
+            <span class="${pergunta.resposta === 'Sim' ? 'resposta-sim' : 'resposta-nao'}">${pergunta.resposta}</span>
           </div>
-          ${perguntasComRespostas.map((pergunta) => `
-            <div class="pergunta">
-              <strong>${pergunta.textoPergunta}</strong>
-              <span class="${pergunta.resposta === 'Sim' ? 'resposta-sim' : 'resposta-nao'}">${pergunta.resposta}</span>
-            </div>
-          `).join('')}
-          <div class="data-hora-container">
-            <div class="data-hora">Data e Hora de Geração: ${dataHora}</div>
-          </div>
+        `).join('')}
+        <div class="data-hora-container">
+          <div class="data-hora">Data e Hora de Geração: ${dataHora}</div>
         </div>
       </div>
-      ${observationAbertura && `
-            <div class="observacao">
-              <strong>Observação:</strong>
-              <p>${observationAbertura}</p>
-            </div>
-          `}
-          ${observationFechamento && `
-            <div class="observacao">
-              <strong>Observação:</strong>
-              <p>${observationFechamento}</p>
-            </div>
-          `}
-      <footer>
-        <div>______________________________________<br>Assinatura do responsável</div>
-      </footer>
-    </body>
-  </html>
-  `;
+    </div>
+    ${observationAbertura && `
+          <div class="observacao">
+            <strong>Observação:</strong>
+            <p>${observationAbertura}</p>
+          </div>
+        `}
+        ${observationFechamento && `
+          <div class="observacao">
+            <strong>Observação:</strong>
+            <p>${observationFechamento}</p>
+          </div>
+        `}
+    <footer>
+      <div>______________________________________<br>Assinatura do responsável</div>
+    </footer>
+  </body>
+</html>
+`;
 
 
-      const resultado = await Print.printToFileAsync({ html: relatorioHTML });
-      const pdfUri = resultado.uri;
+    const resultado = await Print.printToFileAsync({ html: relatorioHTML });
+    const pdfUri = resultado.uri;
 
-  sendEmailWithAttachment = async () => {
-    try {
-      const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
-      const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
-      const subject = 'Relatorio do dia do setor ASG';
-      const body = 'Segue em anexo o relatorio do dia do setor';
-      const attachment = {
-        uri: [pdfUri],
-        name: 'relatorio.pdf',
-      };
+sendEmailWithAttachment = async () => {
+  try {
+    const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
+    const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
+    const subject = 'Relatorio do dia do setor BAR';
+    const body = 'Segue em anexo o relatorio do dia do setor';
+    const attachment = {
+      uri: [pdfUri],
+      name: 'relatorio.pdf',
+    };
 
-      email(to, bcc, {
-          subject,
-          body,
-          attachment,
-      });
-    } catch (error) {
-      console.error('Erro ao enviar email:', error);
-    }
-  };
-      await sendEmailWithAttachment();
-      // Compartilhar o PDF gerado
-      await Sharing.shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
-    } catch (error) {
-      Alert.alert('Erro', error.message);
-      console.error('Erro ao gerar o relatório:', error);
-    }
-  };
+    email(to, bcc, {
+        subject,
+        body,
+        attachment,
+    });
+  } catch (error) {
+    console.error('Erro ao enviar email:', error);
+  }
+};
+    await sendEmailWithAttachment();
+    // Compartilhar o PDF gerado
+    await Sharing.shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
+  } catch (error) {
+    Alert.alert('Erro', error.message);
+    console.error('Erro ao gerar o relatório:', error);
+  }
+};
 
   const navigation = useNavigation();
 
-return (
+  return (
     <>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="blue" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>CHECKLIST ASG</Text>
+        <Text style={styles.headerText}>CHECKLIST BAR</Text>
       </View>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>

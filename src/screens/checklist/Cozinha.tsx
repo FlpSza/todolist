@@ -29,7 +29,6 @@ const fetchUserData = async () => {
   }
 };
 
-
 const ChecklistItem = ({ item, isChecked, onToggle }) => {
   const handleCheckboxToggle = () => {
     onToggle(item, !isChecked);
@@ -50,7 +49,7 @@ const ChecklistItem = ({ item, isChecked, onToggle }) => {
 };
 
 const Cozinha = () => {
-const [checklistItems, setChecklistItems] = useState([]);
+  const [checklistItems, setChecklistItems] = useState([]);
   const [responses, setResponses] = useState({});
   const [observationAbertura, setObservationAbertura] = useState('');
   const [observationFechamento, setObservationFechamento] = useState('');
@@ -71,10 +70,10 @@ const [checklistItems, setChecklistItems] = useState([]);
           setChecklistItems(questions);
           initializeResponses(questions);
         } else {
-          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor ASG:`, response.data);
+          console.error(`Resposta inválida ao buscar perguntas do tipo ${tipoPergunta} para o setor Cozinha:`, response.data);
         }
       } catch (error) {
-        console.error(`Erro ao buscar perguntas do tipo para o setor ASG:`, error);
+        console.error(`Erro ao buscar perguntas do tipo para o setor Cozinha:`, error);
       }
     };
 
@@ -228,7 +227,7 @@ sendEmailWithAttachment = async () => {
   try {
     const to = ['fellipe.silva@grupostarinfo.com.br']// Endereços de email dos destinatários
     const bcc = ['ofellipe2023@gmail.com']; // Endereços de email de cópia carbono oculta
-    const subject = 'Relatorio do dia do setor ASG';
+    const subject = 'Relatorio do dia do setor COZINHA';
     const body = 'Segue em anexo o relatorio do dia do setor';
     const attachment = {
       uri: [pdfUri],
@@ -252,69 +251,70 @@ sendEmailWithAttachment = async () => {
     console.error('Erro ao gerar o relatório:', error);
   }
 };
-const navigation = useNavigation();
+
+  const navigation = useNavigation();
 
   return (
-      <>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="blue" />
+    <>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="blue" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>CHECKLIST COZINHA</Text>
+      </View>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          {checklistItems.map((item, index) => (
+            <ChecklistItem
+              key={index}
+              item={item.textoPergunta}
+              isChecked={item.isChecked}
+              onToggle={handleToggle}
+            />
+          ))}
+          {showObservationAbertura && (
+            <TextInput
+              style={styles.observationInput}
+              value={observationAbertura}
+              onChangeText={setObservationAbertura}
+              placeholder="Digite sua observação para abertura..."
+              multiline
+            />
+          )}
+          {showObservationFechamento && (
+            <TextInput
+              style={styles.observationInput}
+              value={observationFechamento}
+              onChangeText={setObservationFechamento}
+              placeholder="Digite sua observação para fechamento..."
+              multiline
+            />
+          )}
+        </ScrollView>
+        <View style={styles.bottomButtons}>
+          <TouchableOpacity onPress={() => setIsAbertura(true)}>
+            <Image source={require('../../../assets/abertura.png')} style={styles.imgBtn} />
+            <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
           </TouchableOpacity>
-          <Text style={styles.headerText}>CHECKLIST ASG</Text>
+          <TouchableOpacity onPress={() => setIsAbertura(false)}>
+            <Image source={require('../../../assets/fechamento.png')} style={[styles.imgBtn, styles.imgBtn2]} />
+            <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
+            <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
+            <Text style={styles.buttonText}>
+              {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={gerarRelatorio}>
+            <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
+            <Text style={styles.buttonText}>Gerar Relatório</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.container}>
-          <ScrollView style={styles.scrollView}>
-            {checklistItems.map((item, index) => (
-              <ChecklistItem
-                key={index}
-                item={item.textoPergunta}
-                isChecked={item.isChecked}
-                onToggle={handleToggle}
-              />
-            ))}
-            {showObservationAbertura && (
-              <TextInput
-                style={styles.observationInput}
-                value={observationAbertura}
-                onChangeText={setObservationAbertura}
-                placeholder="Digite sua observação para abertura..."
-                multiline
-              />
-            )}
-            {showObservationFechamento && (
-              <TextInput
-                style={styles.observationInput}
-                value={observationFechamento}
-                onChangeText={setObservationFechamento}
-                placeholder="Digite sua observação para fechamento..."
-                multiline
-              />
-            )}
-          </ScrollView>
-          <View style={styles.bottomButtons}>
-            <TouchableOpacity onPress={() => setIsAbertura(true)}>
-              <Image source={require('../../../assets/abertura.png')} style={styles.imgBtn} />
-              <Text style={isAbertura ? styles.activeButtonText : styles.buttonText}>Abertura</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsAbertura(false)}>
-              <Image source={require('../../../assets/fechamento.png')} style={[styles.imgBtn, styles.imgBtn2]} />
-              <Text style={!isAbertura ? styles.activeButtonText : styles.buttonText}>Fechamento</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={isAbertura ? handleObservationToggleAbertura : handleObservationToggleFechamento}>
-              <Image source={require('../../../assets/observa.png')} style={styles.imgBtn} />
-              <Text style={styles.buttonText}>
-                {isAbertura ? 'Observação Abertura' : 'Observação Fechamento'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={gerarRelatorio}>
-              <Image source={require('../../../assets/genRelatorio.png')} style={styles.imgBtn} />
-              <Text style={styles.buttonText}>Gerar Relatório</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </>
-    );
-  };
+      </View>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
