@@ -28,7 +28,7 @@ const CadUser = () => {
 
         const fetchLojas = async () => {
             try {
-                const response = await axios.get('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/storelist');
+                const response = await axios.get('https://server-checklist.onrender.com/storelist');
                 setLojas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar lojas:', error);
@@ -41,7 +41,7 @@ const CadUser = () => {
 
     const handleAddUser = async () => {
         try {
-            const response = await axios.post('https://de23-2804-d41-b066-6900-789f-f58e-445e-b3a7.ngrok-free.app/users', {
+            const response = await axios.post('https://server-checklist.onrender.com/users', {
                 nome,
                 email,
                 senha,

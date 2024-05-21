@@ -182,7 +182,7 @@ const relatorioHTML = `
   </head>
   <body>
     <div class="logo-container">
-      <img class="logo-img" src="https://i.imgur.com/3wiC69M.png" alt="Logo da empresa" />
+      <img class="logo-img" src="https://imgur.com/a/73j02Mn.png" alt="Logo da empresa" />
     </div>
     <div class="content">
       <div class="main-container">
