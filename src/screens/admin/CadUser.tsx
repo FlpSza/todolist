@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
-import RNPickerSelect from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
 const CadUser = () => {
@@ -80,12 +80,12 @@ const CadUser = () => {
                         secureTextEntry={true}
                         value={senha}
                         onChangeText={text => setSenha(text)} />
-                    <RNPickerSelect
+                    <Picker
                         style={pickerSelectStyles}
                         placeholder={{ label: 'Selecione o setor', value: null }}
                         onValueChange={(value) => setSelectedSetor(value)}
                         items={setores.map(setor => ({ label: setor.nmSetor, value: setor.idSetor, key: setor.idSetor }))} />
-                    <RNPickerSelect
+                    <Picker
                         style={pickerSelectStyles}
                         placeholder={{ label: 'Selecione a loja', value: null }}
                         onValueChange={(value) => setSelectedLoja(value)}

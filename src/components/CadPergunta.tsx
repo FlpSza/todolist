@@ -4,13 +4,12 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones necessários
 import { useNavigation } from '@react-navigation/native';
-import RNPickerSelect from 'react-native-picker-select';
 
 const CadPergunta = () => {
   const navigation = useNavigation();
   const [textoPergunta, setTextoPergunta] = useState('');
   const [idSetor, setIdSetor] = useState('');
-  const [tipoPergunta, setTipoPergunta] = useState('Abertura'); // Estado para o tipo de pergunta: Abertura ou Fechamento
+  const [tipoPergunta, setTipoPergunta] = useState(''); // Estado para o tipo de pergunta: Abertura ou Fechamento
   const [setores, setSetores] = useState([]);
 
   useEffect(() => {
@@ -64,7 +63,7 @@ const CadPergunta = () => {
           onChangeText={setTextoPergunta}
           placeholder="Digite o texto da pergunta" />
       <Text style={styles.label}>Setor:</Text>
-      <RNPickerSelect
+      <Picker
         style={pickerSelectStyles}
         placeholder={{ label: 'Selecione um setor...', value: '' }}
         onValueChange={(value) => setIdSetor(value)}
@@ -72,7 +71,7 @@ const CadPergunta = () => {
       />
 
       <Text style={styles.label}>Tipo de Pergunta:</Text>
-      <RNPickerSelect
+      <Picker
         style={pickerSelectStyles}
         placeholder={{ label: 'Selecione o tipo de pergunta...', value: '' }}
         onValueChange={(value) => setTipoPergunta(value)}
